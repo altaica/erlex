@@ -9,7 +9,10 @@ stop() ->
     ?MODULE ! stop.
 
 join(Caller) ->
-    ?MODULE ! {join, Caller, self()}.
+    ?MODULE ! {join, Caller, self()},
+    receive
+        {joined, Conference} -> Conference
+    end.
 
 send(Message) ->
     ?MODULE ! {send, Message, self()}.

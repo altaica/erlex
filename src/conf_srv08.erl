@@ -10,7 +10,10 @@ stop() ->
 
 join(Caller) ->
     %TODO link...
-    ?MODULE ! {join, Caller, self()}.
+    ?MODULE ! {join, Caller, self()},
+    receive
+        {joined, Conference} -> Conference
+    end.
 
 send(Message) ->
     ?MODULE ! {send, Message, self()}.
@@ -25,6 +28,7 @@ loop(Conference) ->
             Response = {data, caller_id(From, Conference), Message},
             [To ! Response || {_Id, To} <- Conference, To =/= From],
             loop(Conference);
+        %TODO handle link drop
         stop ->
             unregister(?MODULE)
     end.
