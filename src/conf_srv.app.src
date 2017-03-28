@@ -1,0 +1,4 @@
+{application, conf_srv, [
+    {description, "Simple conference server"},
+    {vsn, git}
+]}.

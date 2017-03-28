@@ -1,0 +1,21 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+    {
+        "taskName": "build",
+        "command": "rebar3",
+        "args": ["do", "dialyzer,", "xref,", "eunit,", "ct,", "cover,", "edoc"]
+    },
+    {
+        "taskName": "lint",
+        "command": "rebar3",
+        "args": ["as", "lint", "lint"]
+    },
+    {
+        "taskName": "test",
+        "command": "rebar3",
+        "args": ["do", "eunit,", "ct,", "cover"]
+    }]
+}

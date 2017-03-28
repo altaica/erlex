@@ -1,0 +1,20 @@
+matrix:
+  fast_finish: true
+  include:
+    - os: linux
+      language: erlang
+      otp_release: 19.2
+
+# Avoid rebuilding Dialyzer PLT every time.
+cache:
+  directories:
+     - "$HOME/.cache/rebar3"
+
+# Travis uses rebar by default. Get rebar3 instead.
+install:
+  - wget https://s3.amazonaws.com/rebar3/rebar3 && chmod +x rebar3
+
+script:
+  - ./rebar3 do version, dialyzer, eunit, ct, cover
+  - grep "<td><strong>Total</strong></td><td>100%</td>" _build/test/cover/index.html
+  - ./rebar3 as lint lint
