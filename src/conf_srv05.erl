@@ -11,7 +11,7 @@ stop() ->
 join(Caller) ->
     ?MODULE ! {join, Caller, self()},
     receive
-        {joined, Conference} -> Conference
+        {joined, Callers} -> Callers
     end.
 
 loop(Conference) ->

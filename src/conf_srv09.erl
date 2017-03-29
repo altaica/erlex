@@ -12,7 +12,7 @@ join(Caller) ->
     %TODO link...
     ?MODULE ! {join, Caller, self()},
     receive
-        {joined, Conference} -> Conference
+        {joined, Callers} -> Callers
     end.
 
 send(Message) ->
@@ -21,8 +21,7 @@ send(Message) ->
 loop(Conference) ->
     receive
         {join, Caller, From} ->
-            From ! {joined, Conference},
-            announce(Caller, Conference),
+            From ! {joined, handle_join(Caller, Conference)},
             loop([{Caller, From} | Conference]);
         {send, Message, From} ->
             Response = {data, caller_id(From, Conference), Message},
@@ -33,10 +32,12 @@ loop(Conference) ->
             unregister(?MODULE)
     end.
 
-announce(_Caller, []) -> ok;
-announce(Caller, [{Id, To} | Conference]) ->
+handle_join(Caller, Conference) ->
+    [handle_join(Caller, Id, To) || {Id, To} <- Conference].
+
+handle_join(Caller, Id, To) ->
     To ! {joined, Id, Caller},
-    announce(Caller, Conference).
+    Id.
 
 caller_id(From, [{Id, Pid} | _Conference]) when From =:= Pid -> Id;
 caller_id(From, [_Participant | Conference]) ->
