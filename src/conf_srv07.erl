@@ -24,8 +24,7 @@ loop(Conference) ->
             announce(Caller, Conference),
             loop([{Caller, From} | Conference]);
         {send, Message, From} ->
-            Response = {data, caller_id(From, Conference), Message},
-            [To ! Response || {_Id, To} <- Conference, To =/= From],
+            [To ! {data, Id, Message} || {Id, To} <- Conference, To =/= From],
             loop(Conference);
         stop ->
             unregister(?MODULE)
@@ -36,6 +35,3 @@ announce(Caller, [{Id, To} | Conference]) ->
     To ! {joined, Id, Caller},
     announce(Caller, Conference).
 
-caller_id(From, [{Id, Pid} | _Conference]) when From =:= Pid -> Id;
-caller_id(From, [_Participant | Conference]) ->
-    caller_id(From, Conference).

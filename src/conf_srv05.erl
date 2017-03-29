@@ -17,15 +17,9 @@ join(Caller) ->
 loop(Conference) ->
     receive
         {join, Caller, From} ->
-            From ! {join, Conference},
-            announce(Caller, Conference),
-            loop([{Caller, From} | Conference]);
+            From ! {joined, Conference},
+            loop([Caller | Conference]);
         stop ->
             unregister(?MODULE)
     end.
-
-announce(_Caller, []) -> ok;
-announce(Caller, [{Id, To} | Conference]) ->
-    To ! {joined, Id, Caller},
-    announce(Caller, Conference).
 

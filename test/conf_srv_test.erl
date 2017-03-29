@@ -37,13 +37,13 @@ async_join(Caller, State) ->
             [Caller | State]
     end.
 
-conf_srv04a_test() ->
-    ?assertMatch(true, conf_srv04a:start()),
+conf_srv05_test() ->
+    ?assertMatch(true, conf_srv05:start()),
     lists:foldl(fun sync_join/2, [], [joe, mike, robert, elephant]),
-    ?assertMatch(stop, conf_srv04a:stop()).
+    ?assertMatch(stop, conf_srv05:stop()).
 
 sync_join(Caller, State) ->
-    ?assertMatch(State, conf_srv04a:join(Caller)),
+    ?assertMatch(State, conf_srv05:join(Caller)),
     [Caller | State].
 
 %conf_srv_test05+ => spawn receiver processes for each caller.

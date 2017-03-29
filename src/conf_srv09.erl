@@ -1,4 +1,4 @@
--module(conf_srv08).
+-module(conf_srv09).
 -export([start/0, stop/0, join/1, send/1]).
 
 start() ->
@@ -9,6 +9,7 @@ stop() ->
     ?MODULE ! stop.
 
 join(Caller) ->
+    %TODO link...
     ?MODULE ! {join, Caller, self()},
     receive
         {joined, Conference} -> Conference
@@ -27,6 +28,7 @@ loop(Conference) ->
             Response = {data, caller_id(From, Conference), Message},
             [To ! Response || {_Id, To} <- Conference, To =/= From],
             loop(Conference);
+        %TODO handle link drop
         stop ->
             unregister(?MODULE)
     end.
