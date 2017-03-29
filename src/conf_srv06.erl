@@ -17,15 +17,15 @@ join(Caller) ->
 loop(Conference) ->
     receive
         {join, Caller, From} ->
-            From ! {joined, handle_join(Caller, Conference)},
+            From ! {joined, callers(Conference)},
+            announce(Caller, Conference),
             loop([{Caller, From} | Conference]);
         stop ->
             unregister(?MODULE)
     end.
 
-handle_join(Caller, Conference) ->
-    [announce(Caller, Id, To) || {Id, To} <- Conference].
+callers(Conference) ->
+    [Caller || {Caller, _From} <- Conference].
 
-announce(Caller, Id, To) ->
-    To ! {joined, Id, Caller},
-    Id.
+announce(Caller, Conference) ->
+    [To ! {joined, Id, Caller} || {Id, To} <- Conference].

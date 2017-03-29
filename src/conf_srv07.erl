@@ -20,18 +20,21 @@ send(Message) ->
 loop(Conference) ->
     receive
         {join, Caller, From} ->
-            From ! {joined, handle_join(Caller, Conference)},
+            From ! {joined, callers(Conference)},
+            announce(Caller, Conference),
             loop([{Caller, From} | Conference]);
-        {send, Message, From} ->
-            [To ! {data, Id, Message} || {Id, To} <- Conference, To =/= From],
+        {send, Message, _From} ->
+            broadcast(Message, Conference),
             loop(Conference);
         stop ->
             unregister(?MODULE)
     end.
 
-handle_join(Caller, Conference) ->
-    [announce(Caller, Id, To) || {Id, To} <- Conference].
+callers(Conference) ->
+    [Caller || {Caller, _From} <- Conference].
 
-announce(Caller, Id, To) ->
-    To ! {joined, Id, Caller},
-    Id.
+announce(Caller, Conference) ->
+    [To ! {joined, Id, Caller} || {Id, To} <- Conference].
+
+broadcast(Message, Conference) ->
+    [To ! {data, Message} || {_Id, To} <- Conference].
