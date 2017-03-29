@@ -11,17 +11,13 @@ conf_srv01_test() ->
 conf_srv02_test() ->
     ?assertMatch(true, conf_srv02:start()),
     conf_srv02 ! {join, self()},
-    receive
-        Response -> ?assertMatch({joined, ok}, Response)
-    end,
+    ?assertMatch({joined, ok}, wait_response()),
     ?assertMatch(stop, conf_srv02:stop()).
 
 conf_srv03_test() ->
     ?assertMatch(true, conf_srv03:start()),
     conf_srv03:join(),
-    receive
-        Response -> ?assertMatch({joined, ok}, Response)
-    end,
+    ?assertMatch({joined, ok}, wait_response()),
     ?assertMatch(stop, conf_srv03:stop()).
 
 conf_srv04_test() ->
@@ -31,11 +27,8 @@ conf_srv04_test() ->
 
 async_join(Caller, State) ->
     conf_srv04:join(Caller),
-    receive
-        Response ->
-            ?assertMatch({joined, State}, Response),
-            [Caller | State]
-    end.
+    ?assertMatch({joined, State}, wait_response()),
+    [Caller | State].
 
 conf_srv05_test() ->
     ?assertMatch(true, conf_srv05:start()),
@@ -46,5 +39,26 @@ sync_join(Caller, State) ->
     ?assertMatch(State, conf_srv05:join(Caller)),
     [Caller | State].
 
-%conf_srv_test05+ => spawn receiver processes for each caller.
-%May want to do this under CT.
+conf_srv06_test() ->
+    ?assertMatch(true, conf_srv06:start()),
+    Callers = [joe, mike, robert, elephant],
+    lists:foldl(fun conf_srv06_client/2, {[], Callers}, Callers),
+    % TODO this would be better as a common test, with 1 test per caller
+    % and the above in the suite init
+    [?assertMatch({ok, P}, wait_response()) || P <- Callers],
+    ?assertMatch(stop, conf_srv06:stop()).
+
+conf_srv06_client(Caller, {Participants, [Caller | Callers]}) ->
+    Tester = self(),
+    spawn(fun() ->
+            conf_srv06:join(Caller),
+            [{joined, Caller, P} = wait_response() || P <-Callers],
+            Tester ! {ok, Caller}
+        end),
+    {[Caller | Participants], Callers}.
+
+wait_response() ->
+    receive
+        Response -> Response
+        after 1000 -> timeout
+    end.

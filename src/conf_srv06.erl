@@ -17,7 +17,7 @@ join(Caller) ->
 loop(Conference) ->
     receive
         {join, Caller, From} ->
-            From ! {join, Conference},
+            From ! {joined, Conference},
             announce(Caller, Conference),
             loop([{Caller, From} | Conference]);
         stop ->
