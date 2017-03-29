@@ -24,8 +24,7 @@ loop(Conference) ->
             From ! {joined, handle_join(Caller, Conference)},
             loop([{Caller, From} | Conference]);
         {send, Message, From} ->
-            Response = {data, caller_id(From, Conference), Message},
-            [To ! Response || {_Id, To} <- Conference, To =/= From],
+            handle_send(Message, From, Conference),
             loop(Conference);
         %TODO handle link drop
         stop ->
@@ -33,12 +32,16 @@ loop(Conference) ->
     end.
 
 handle_join(Caller, Conference) ->
-    [handle_join(Caller, Id, To) || {Id, To} <- Conference].
+    [announce(Caller, Id, To) || {Id, To} <- Conference].
 
-handle_join(Caller, Id, To) ->
+announce(Caller, Id, To) ->
     To ! {joined, Id, Caller},
     Id.
 
-caller_id(From, [{Id, Pid} | _Conference]) when From =:= Pid -> Id;
+handle_send(Message, From, Conference) ->
+    Caller = caller_id(From, Conference),
+    [To ! {data, Caller, Message} || {Id, To} <- Conference, To =/= From].
+
+caller_id(From, [{Caller, From} | _Conference]) -> Caller;
 caller_id(From, [_Participant | Conference]) ->
     caller_id(From, Conference).
