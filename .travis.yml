@@ -15,5 +15,6 @@ install:
   - wget https://s3.amazonaws.com/rebar3/rebar3 && chmod +x rebar3
 
 script:
-  - ./rebar3 do version, dialyzer, eunit, ct, cover, edoc
+  - ./rebar3 do version, dialyzer, eunit, ct, cover
   - ./rebar3 as lint lint
+#  - grep "<td><strong>Total</strong></td><td>100%</td>" _build/test/cover/index.html
