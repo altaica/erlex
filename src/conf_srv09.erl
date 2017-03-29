@@ -40,7 +40,7 @@ announce(Caller, Id, To) ->
 
 handle_send(Message, From, Conference) ->
     Caller = caller_id(From, Conference),
-    [To ! {data, Caller, Message} || {Id, To} <- Conference, To =/= From].
+    [To ! {data, Caller, Message} || {_Id, To} <- Conference, To =/= From].
 
 caller_id(From, [{Caller, From} | _Conference]) -> Caller;
 caller_id(From, [_Participant | Conference]) ->
