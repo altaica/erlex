@@ -24,7 +24,7 @@ loop(Conference) ->
     end.
 
 handle_join(Caller, Conference) ->
-    [handle_join(Caller, Id, To) || {Id, To} <- Conference].
+    [fun() -> To ! {joined, Id, Caller}, Id end || {Id, To} <- Conference].
 
 handle_join(Caller, Id, To) ->
     To ! {joined, Id, Caller},
