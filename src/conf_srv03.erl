@@ -9,7 +9,10 @@ stop() ->
     ?MODULE ! stop.
 
 join() ->
-    ?MODULE ! {join, self()}.
+    ?MODULE ! {join, self()},
+    receive
+        {joined, ok} -> ok
+    end.
 
 loop() ->
     receive

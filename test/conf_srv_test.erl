@@ -16,19 +16,8 @@ conf_srv02_test() ->
 
 conf_srv03_test() ->
     ?assertMatch(true, conf_srv03:start()),
-    conf_srv03:join(),
-    ?assertMatch({joined, ok}, wait_response()),
+    ?assertMatch(ok,   conf_srv03:join()),
     ?assertMatch(stop, conf_srv03:stop()).
-
-conf_srv04_test() ->
-    ?assertMatch(true, conf_srv04:start()),
-    lists:foldl(fun async_join/2, [], [joe, mike, robert, elephant]),
-    ?assertMatch(stop, conf_srv04:stop()).
-
-async_join(Caller, State) ->
-    conf_srv04:join(Caller),
-    ?assertMatch({joined, State}, wait_response()),
-    [Caller | State].
 
 conf_srv05_test() ->
     ?assertMatch(true, conf_srv05:start()),
