@@ -18,8 +18,8 @@ loop(Conference) ->
     receive
         {join, Caller, From} ->
             {Callers, Pids} = lists:unzip(Conference),
-            From ! {joined, Callers},
             lists:foreach(fun(To) -> To ! {joined, Caller} end, Pids),
+            From ! {joined, Callers},
             loop([{Caller, From} | Conference]);
         stop ->
             unregister(?MODULE)
