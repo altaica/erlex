@@ -41,7 +41,7 @@ conf_srv06_client(Caller, {Participants, [Caller | Callers]}) ->
     Tester = self(),
     spawn(fun() ->
             conf_srv06:join(Caller),
-            [{joined, Caller, P} = wait_response() || P <-Callers],
+            [{joined, P} = wait_response() || P <-Callers],
             Tester ! {ok, Caller}
         end),
     {[Caller | Participants], Callers}.

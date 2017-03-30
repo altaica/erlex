@@ -17,15 +17,10 @@ join(Caller) ->
 loop(Conference) ->
     receive
         {join, Caller, From} ->
-            From ! {joined, callers(Conference)},
-            announce(Caller, Conference),
+            {Callers, Pids} = lists:unzip(Conference),
+            From ! {joined, Callers},
+            lists:foreach(fun(To) -> To ! {joined, Caller} end, Pids),
             loop([{Caller, From} | Conference]);
         stop ->
             unregister(?MODULE)
     end.
-
-callers(Conference) ->
-    [Caller || {Caller, _From} <- Conference].
-
-announce(Caller, Conference) ->
-    [To ! {joined, Id, Caller} || {Id, To} <- Conference].
