@@ -11,13 +11,14 @@ stop() ->
 join(Caller) ->
     ?MODULE ! {join, Caller, self()},
     receive
-        {joined, Callers} -> Callers
+        {joined, ?MODULE, Callers} -> {ok, Callers}
+        after 5000 -> {error, timeout}
     end.
 
 loop(Conference) ->
     receive
         {join, Caller, From} ->
-            From ! {joined, Conference},
+            From ! {joined, ?MODULE, Conference},
             loop([Caller | Conference]);
         stop ->
             unregister(?MODULE)

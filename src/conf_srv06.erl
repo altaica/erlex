@@ -11,15 +11,16 @@ stop() ->
 join(Caller) ->
     ?MODULE ! {join, Caller, self()},
     receive
-        {joined, Callers} -> Callers
+        {joined, ?MODULE, Callers} -> {ok, Callers}
+        after 5000 -> {error, timeout}
     end.
 
 loop(Conference) ->
     receive
         {join, Caller, From} ->
             {Callers, Pids} = lists:unzip(Conference),
-            lists:foreach(fun(To) -> To ! {joined, Caller} end, Pids),
-            From ! {joined, Callers},
+            lists:foreach(fun(To) -> To ! {joined, ?MODULE, Caller} end, Pids),
+            From ! {joined, ?MODULE, Callers},
             loop([{Caller, From} | Conference]);
         stop ->
             unregister(?MODULE)

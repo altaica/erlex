@@ -11,13 +11,14 @@ stop() ->
 join() ->
     ?MODULE ! {join, self()},
     receive
-        {joined, ok} -> ok
+        {joined, ?MODULE, ok} -> ok
+        after 5000 -> {error, timeout}
     end.
 
 loop() ->
     receive
         {join, From} ->
-            From ! {joined, ok},
+            From ! {joined, ?MODULE, ok},
             loop();
         stop ->
             unregister(?MODULE)

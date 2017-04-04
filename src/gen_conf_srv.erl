@@ -28,10 +28,11 @@ init([]) ->
     {ok, #{}}.
 
 handle_call({join, Caller}, {From, _Tag}, State) ->
-    [To ! {joined, Caller} || To <- maps:keys(State)],
+    [gen_server:cast(To, {joined, Caller}) || To <- maps:keys(State)],
     {reply, {joined, maps:values(State)}, State#{From => Caller}};
 handle_call({send, Message}, {From, _Tag}, State) ->
-    [To ! {data, maps:get(From, State), Message} || To <- maps:keys(State)],
+    Broadcast = {data, maps:get(From, State), Message},
+    [gen_server:cast(To, Broadcast) || To <- maps:keys(State)],
     {reply, ok, State};
 handle_call(stop, _From, State) ->
     {stop, normal, State}.
@@ -41,7 +42,7 @@ handle_cast(_Msg, State) ->
 
 handle_info({'EXIT', From, _Reason}, State) ->
     {{Caller, From}, Updated} = maps:take(From, State),
-    [To ! {left, Caller} || To <- maps:keys(Updated)],
+    [gen_server:cast(To, {left, Caller}) || To <- maps:keys(Updated)],
     {noreply, Updated}.
 
 code_change(_OldVsn, State, _Extra) ->

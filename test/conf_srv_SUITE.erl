@@ -16,11 +16,11 @@ end_per_testcase(TC, _Config) ->
 conf_srv01(_Config) ->
     Pid = conf_srv01:start(),
     Pid ! {join, self()},
-    {joined, ok} = response().
+    {joined, Pid, ok} = response().
 
 conf_srv02(_Config) ->
     conf_srv02 ! {join, self()},
-    {joined, ok} = response().
+    {joined, conf_srv02, ok} = response().
 
 conf_srv03(_Config) ->
     ok = conf_srv03:join().
@@ -30,7 +30,7 @@ conf_srv05(_Config) ->
     lists:foldl(fun expect_joined/2, [], Participants).
 
 expect_joined(Caller, Callers) ->
-    Callers = conf_srv05:join(Caller),
+    {ok, Callers} = conf_srv05:join(Caller),
     [Caller | Callers].
 
 response() ->

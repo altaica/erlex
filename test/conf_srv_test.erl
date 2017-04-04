@@ -4,14 +4,12 @@
 conf_srv01_test() ->
     Pid = conf_srv01:start(),
     Pid ! {join, self()},
-    receive
-        Response -> ?assertMatch({joined, ok}, Response)
-    end.
+    ?assertMatch({joined, Pid, ok}, wait_response()).
 
 conf_srv02_test() ->
     ?assertMatch(true, conf_srv02:start()),
     conf_srv02 ! {join, self()},
-    ?assertMatch({joined, ok}, wait_response()),
+    ?assertMatch({joined, conf_srv02, ok}, wait_response()),
     ?assertMatch(stop, conf_srv02:stop()).
 
 conf_srv03_test() ->
@@ -25,7 +23,7 @@ conf_srv05_test() ->
     ?assertMatch(stop, conf_srv05:stop()).
 
 sync_join(Caller, State) ->
-    ?assertMatch(State, conf_srv05:join(Caller)),
+    ?assertMatch({ok, State}, conf_srv05:join(Caller)),
     [Caller | State].
 
 conf_srv06_test() ->
@@ -41,7 +39,7 @@ conf_srv06_client(Caller, {Participants, [Caller | Callers]}) ->
     Tester = self(),
     spawn(fun() ->
             conf_srv06:join(Caller),
-            [{joined, P} = wait_response() || P <-Callers],
+            [{joined, conf_srv06, P} = wait_response() || P <-Callers],
             Tester ! {ok, Caller}
         end),
     {[Caller | Participants], Callers}.
