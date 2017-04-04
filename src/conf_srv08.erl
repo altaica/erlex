@@ -11,7 +11,8 @@ stop() ->
 join(Caller) ->
     ?MODULE ! {join, Caller, self()},
     receive
-        {joined, Callers} -> Callers
+        {joined, ?MODULE, Callers} -> {ok, Callers}
+        after 5000 -> {error, timeout}
     end.
 
 send(Message) ->
