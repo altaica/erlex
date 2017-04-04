@@ -3,13 +3,13 @@
 
 conf_srv01_test() ->
     Pid = conf_srv01:start(),
-    Pid ! {join, self()},
-    ?assertMatch({joined, Pid, ok}, wait_response()).
+    Pid ! {self(), join},
+    ?assertMatch({Pid, joined}, wait_response()).
 
 conf_srv02_test() ->
     ?assertMatch(true, conf_srv02:start()),
-    conf_srv02 ! {join, self()},
-    ?assertMatch({joined, conf_srv02, ok}, wait_response()),
+    conf_srv02 ! {self(), join},
+    ?assertMatch({conf_srv02, joined}, wait_response()),
     ?assertMatch(stop, conf_srv02:stop()).
 
 conf_srv03_test() ->
@@ -39,7 +39,7 @@ conf_srv06_client(Caller, {Participants, [Caller | Callers]}) ->
     Tester = self(),
     spawn(fun() ->
             conf_srv06:join(Caller),
-            [{joined, conf_srv06, P} = wait_response() || P <-Callers],
+            [{conf_srv06, {joined, P}} = wait_response() || P <-Callers],
             Tester ! {ok, Caller}
         end),
     {[Caller | Participants], Callers}.

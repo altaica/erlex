@@ -9,16 +9,16 @@ stop() ->
     ?MODULE ! stop.
 
 join() ->
-    ?MODULE ! {join, self()},
+    ?MODULE ! {self(), join},
     receive
-        {joined, ?MODULE, ok} -> ok
+        {?MODULE, joined} -> ok
         after 5000 -> {error, timeout}
     end.
 
 loop() ->
     receive
-        {join, From} ->
-            From ! {joined, ?MODULE, ok},
+        {From, join} ->
+            From ! {?MODULE, joined},
             loop();
         stop ->
             unregister(?MODULE)

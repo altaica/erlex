@@ -10,8 +10,8 @@ stop() ->
 
 loop() ->
     receive
-        {join, From} ->
-            From ! {joined, ?MODULE, ok},
+        {From, join} ->
+            From ! {?MODULE, joined},
             loop();
         stop ->
             unregister(?MODULE)

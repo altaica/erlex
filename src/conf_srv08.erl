@@ -9,32 +9,32 @@ stop() ->
     ?MODULE ! stop.
 
 join(Caller) ->
-    ?MODULE ! {join, Caller, self()},
+    ?MODULE ! {self(), {join, Caller}},
     receive
-        {joined, ?MODULE, Callers} -> {ok, Callers}
+        {?MODULE, {joined, Callers}} -> {ok, Callers}
         after 5000 -> {error, timeout}
     end.
 
 send(Message) ->
-    ?MODULE ! {send, Message, self()}.
+    ?MODULE ! {self(), {send, Message}}.
 
 loop(Conference) ->
     receive
-        {join, Caller, From} ->
-            handle_join(Caller, From, Conference),
-            loop([{Caller, From} | Conference]);
-        {send, Message, From} ->
-            handle_send(Message, From, Conference),
+        {From, {join, Caller}} ->
+            handle_join(From, Caller, Conference),
+            loop([{From, Caller} | Conference]);
+        {From, {send, Message}} ->
+            handle_send(From, Message, Conference),
             loop(Conference);
         stop ->
             unregister(?MODULE)
     end.
 
-handle_join(Caller, From, Conference) ->
-    {Callers, Pids} = lists:unzip(Conference),
-    From ! {joined, Callers},
-    lists:foreach(fun(To) -> To ! {joined, ?MODULE, Caller} end, Pids).
+handle_join(From, Caller, Conference) ->
+    {Pids, Callers} = lists:unzip(Conference),
+    From ! {?MODULE, {joined, Callers}},
+    lists:foreach(fun(To) -> To ! {?MODULE, {joined, Caller}} end, Pids).
 
-handle_send(Message, From, Conference) ->
-    {Caller, From} = lists:keyfind(From, 2, Conference),
-    [To ! {data, ?MODULE, Caller, Message} || {Id, To} <- Conference, Id =/= Caller].
+handle_send(From, Message, Conference) ->
+    {From, Caller} = lists:keyfind(From, 2, Conference),
+    [To ! {?MODULE, {data, Caller, Message}} || {To, Id} <- Conference, Id =/= Caller].

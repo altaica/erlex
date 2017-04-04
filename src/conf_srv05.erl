@@ -9,16 +9,16 @@ stop() ->
     ?MODULE ! stop.
 
 join(Caller) ->
-    ?MODULE ! {join, Caller, self()},
+    ?MODULE ! {self(), {join, Caller}},
     receive
-        {joined, ?MODULE, Callers} -> {ok, Callers}
+        {?MODULE, {joined, Callers}} -> {ok, Callers}
         after 5000 -> {error, timeout}
     end.
 
 loop(Conference) ->
     receive
-        {join, Caller, From} ->
-            From ! {joined, ?MODULE, Conference},
+        {From, {join, Caller}} ->
+            From ! {?MODULE, {joined, Conference}},
             loop([Caller | Conference]);
         stop ->
             unregister(?MODULE)

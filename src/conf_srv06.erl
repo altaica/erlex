@@ -9,19 +9,19 @@ stop() ->
     ?MODULE ! stop.
 
 join(Caller) ->
-    ?MODULE ! {join, Caller, self()},
+    ?MODULE ! {self(), {join, Caller}},
     receive
-        {joined, ?MODULE, Callers} -> {ok, Callers}
+        {?MODULE, {joined, Callers}} -> {ok, Callers}
         after 5000 -> {error, timeout}
     end.
 
 loop(Conference) ->
     receive
-        {join, Caller, From} ->
-            {Callers, Pids} = lists:unzip(Conference),
-            lists:foreach(fun(To) -> To ! {joined, ?MODULE, Caller} end, Pids),
-            From ! {joined, ?MODULE, Callers},
-            loop([{Caller, From} | Conference]);
+        {From, {join, Caller}} ->
+            {Pids, Callers} = lists:unzip(Conference),
+            lists:foreach(fun(To) -> To ! {?MODULE, {joined, Caller}} end, Pids),
+            From ! {?MODULE, {joined, Callers}},
+            loop([{From, Caller} | Conference]);
         stop ->
             unregister(?MODULE)
     end.

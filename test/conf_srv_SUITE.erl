@@ -15,12 +15,12 @@ end_per_testcase(TC, _Config) ->
 
 conf_srv01(_Config) ->
     Pid = conf_srv01:start(),
-    Pid ! {join, self()},
-    {joined, Pid, ok} = response().
+    Pid ! {self(), join},
+    {Pid, joined} = response().
 
 conf_srv02(_Config) ->
-    conf_srv02 ! {join, self()},
-    {joined, conf_srv02, ok} = response().
+    conf_srv02 ! {self(), join},
+    {conf_srv02, joined} = response().
 
 conf_srv03(_Config) ->
     ok = conf_srv03:join().

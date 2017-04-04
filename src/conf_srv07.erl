@@ -9,22 +9,22 @@ stop() ->
     ?MODULE ! stop.
 
 join(Caller) ->
-    ?MODULE ! {join, Caller, self()},
+    ?MODULE ! {self(), {join, Caller}},
     receive
-        {joined, ?MODULE, Callers} -> {ok, Callers}
+        {?MODULE, {joined, Callers}} -> {ok, Callers}
         after 5000 -> {error, timeout}
     end.
 
 send(Message) ->
-    ?MODULE ! {send, Message, self()}.
+    ?MODULE ! {self(), {send, Message}}.
 
 loop(Conference) ->
     receive
-        {join, Caller, From} ->
-            From ! {joined, callers(Conference)},
+        {From, {join, Caller}} ->
+            From ! {?MODULE, {joined, callers(Conference)}},
             announce(Caller, Conference),
-            loop([{Caller, From} | Conference]);
-        {send, Message, _From} ->
+            loop([{From, Caller} | Conference]);
+        {_From, {send, Message}} ->
             broadcast(Message, Conference),
             loop(Conference);
         stop ->
@@ -32,10 +32,10 @@ loop(Conference) ->
     end.
 
 callers(Conference) ->
-    [Caller || {Caller, _From} <- Conference].
+    [Caller || {_From, Caller} <- Conference].
 
 announce(Caller, Conference) ->
-    [To ! {joined, Id, Caller} || {Id, To} <- Conference].
+    [To ! {?MODULE, {joined, Id, Caller}} || {To, Id} <- Conference].
 
 broadcast(Message, Conference) ->
-    [To ! {data, Message} || {_Id, To} <- Conference].
+    [To ! {?MODULE, {data, Message}} || {To, _Id} <- Conference].

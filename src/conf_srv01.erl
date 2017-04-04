@@ -6,7 +6,7 @@ start() ->
 
 loop() ->
     receive
-        {join, From} ->
-            From ! {joined, self(), ok}
+        {From, join} ->
+            From ! {self(), joined}
     end,
     loop().
