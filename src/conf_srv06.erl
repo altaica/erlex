@@ -19,7 +19,11 @@ loop(Conference) ->
     receive
         {From, {join, Caller}} ->
             {Pids, Callers} = lists:unzip(Conference),
-            lists:foreach(fun(To) -> To ! {?MODULE, {joined, Caller}} end, Pids),
+            lists:foreach(
+                fun(To) ->
+                    To ! {?MODULE, {joined, Caller}}
+                end,
+                Pids),
             From ! {?MODULE, {joined, Callers}},
             loop([{From, Caller} | Conference]);
         stop ->

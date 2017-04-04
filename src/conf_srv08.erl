@@ -37,4 +37,5 @@ handle_join(From, Caller, Conference) ->
 
 handle_send(From, Message, Conference) ->
     {From, Caller} = lists:keyfind(From, 2, Conference),
-    [To ! {?MODULE, {data, Caller, Message}} || {To, Id} <- Conference, Id =/= Caller].
+    [To ! {?MODULE, {data, Caller, Message}} || {To, Id} <- Conference,
+                                                     Id =/= Caller].
