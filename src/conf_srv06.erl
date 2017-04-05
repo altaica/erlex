@@ -27,5 +27,5 @@ loop(Conference) ->
             From ! {?MODULE, {joined, Callers}},
             loop([{From, Caller} | Conference]);
         stop ->
-            unregister(?MODULE)
+            ok
     end.

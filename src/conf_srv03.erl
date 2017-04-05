@@ -21,5 +21,5 @@ loop() ->
             From ! {?MODULE, joined},
             loop();
         stop ->
-            unregister(?MODULE)
+            ok
     end.

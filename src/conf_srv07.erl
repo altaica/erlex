@@ -28,7 +28,7 @@ loop(Conference) ->
             broadcast(Message, Conference),
             loop(Conference);
         stop ->
-            unregister(?MODULE)
+            ok
     end.
 
 callers(Conference) ->

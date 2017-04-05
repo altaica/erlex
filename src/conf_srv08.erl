@@ -27,7 +27,7 @@ loop(Conference) ->
             handle_send(From, Message, Conference),
             loop(Conference);
         stop ->
-            unregister(?MODULE)
+            ok
     end.
 
 handle_join(From, Caller, Conference) ->
