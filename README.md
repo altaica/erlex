@@ -12,14 +12,14 @@ This repository contains a super-simple conference server in 3 flavours with ide
 2. Implementation with generic code separated
 3. OTP gen_server implementation
 
-The server presents the following API:
+The server exports the following API:
 
 Function                        | Description
 --------                        | -----------
-`start() -> {ok, pid()}`        | Start the conference server.
-`join() -> {joined, [pid()]}`   | Join the conference; returns list of existing participants.
-`send(Message::term()) -> ok`   | Send a broadcast message to all participants.
-`stop() -> ok`                  | Stop the conference server.
+`start() -> {ok, pid()}`        | Start the conference server
+`join() -> {joined, [pid()]}`   | Join the conference; returns list of existing participants
+`send(Message::term()) -> ok`   | Send a broadcast message to all participants
+`stop() -> ok`                  | Stop the conference server
 
 On joining the server, the caller is announced to the rest of the participants. Participants remain part of the conference as long as the caller process lives. Once the caller terminates, the server announces their disconnection to all remaining participants.
 
@@ -30,17 +30,17 @@ The project is set up to build using [rebar3].
 
 VSCode integration
 ------------------
-`Ctrl+Shift+B` (`Cmd+Shift+B` on Mac) will build & test from within VSCode.
+`Ctrl+Shift+B` (or `Cmd+Shift+B` on Mac) will build & test from within [VSCode].
 
 Linter
 ------
-A [rebar3] plugin is used to provide code [linting][Elvis].
+The [Elvis] rebar3 plugin is used to provide code linting.
 
 From a terminal, use `rebar3 as lint lint`.
 
 Code coverage
 -------------
-From a terminal, use `rebar3 do ct, cover`.
+From a terminal, use `rebar3 do eunit, ct, cover`.
 
 Detailed coverage reports can be found by opening `_build/test/cover/index.html`.
 
@@ -54,4 +54,5 @@ From a terminal, use `rebar3 shell`, e.g.:
 
 <!-- Tools -->
 [rebar3]:   http://www.rebar3.org/
+[VSCode]:   https://code.visualstudio.com
 [Elvis]:    https://github.com/inaka/elvis
