@@ -2,7 +2,7 @@
 -behaviour(gen_server).
 -export([start/0, stop/0, join/0, send/1]).
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, code_change/3, terminate/2]).
--include("conf_srv.hrl").
+-include("conf_srv03.hrl").
 
 %%% API
 
