@@ -14,10 +14,12 @@ This repository contains a super-simple conference server in 3 flavours with ide
 
 The server presents the following API:
 
-* start/0 - starts the server
-* join/0 - join the conference, returns list of existing participants
-* send/1 - broadcast a message to all participants
-* stop/0 - shutdown the server
+Function                        | Description
+--------                        | -----------
+`start() -> {ok, pid()}`        | starts the server
+`join() -> {joined, [pid()]}`   | join the conference, returns list of existing participants
+`send(Message::term()) -> ok`   | broadcast a message to all participants
+`stop() -> ok`                  | shutdown the server
 
 On joining the server, the caller is announced to the rest of the participants. Participants remain part of the conference as long as the caller process lives. Once the caller terminates, the server announces their disconnection to all remaining participants.
 
