@@ -6,7 +6,20 @@ Simple Conference Server
 
 Copyright 2017 Phil Dempster
 
-This repository contains a step by step tutorial for building a super-simple conference server.
+This repository contains a super-simple conference server in 3 flavours with identical functionality:
+
+1. Pure Erlang
+2. Pure Erlang, with generic code seperated out
+3. Using OTP gen_server behaviour
+
+The server presents the following API:
+
+* start/0 - starts the server
+* join/0 - join the conference, returns list of existing participants
+* send/1 - broadcast a message to all participants
+* stop/0 - shutdown the server
+
+On joining the server, the caller is announced to the rest of the participants. Participants remain part of the conference as long as the caller process lives. Once the caller terminates, the server announces their disconnection to all remaining participants.
 
 Build
 -----
