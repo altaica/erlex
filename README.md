@@ -8,9 +8,9 @@ Copyright 2017 Phil Dempster
 
 This repository contains a super-simple conference server in 3 flavours with identical functionality:
 
-1. Pure Erlang
-2. Pure Erlang, with generic code seperated out
-3. Using OTP gen_server behaviour
+1. Direct implementation
+2. Implementation with generic code separated
+3. OTP gen_server implementation
 
 The server presents the following API:
 

@@ -1,22 +1,33 @@
+%%% @doc OTP gen_server implementation of conference server.
+%%% @copyright 2017 Phil Dempster
+
 -module(conf_srv03).
 -behaviour(gen_server).
 -export([start/0, stop/0, join/0, send/1]).
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, code_change/3, terminate/2]).
--include("conf_srv03.hrl").
 
 %%% API
 
+%% @doc Start the conference server.
+-spec start() -> {ok, pid()}.
 start() ->
     gen_server:start({local, ?MODULE}, ?MODULE, [], []).
 
+%% @doc Join the conference; returns list of existing participants.
+-spec join() -> {joined, [pid()]}.
 join() ->
     gen_server:call(?MODULE, join).
 
+%% @doc Send a broadcast message to all participants.
+-spec send(term()) -> ok.
 send(Message) ->
     gen_server:call(?MODULE, {send, Message}).
 
+%% @doc Stop the conference server.
+-spec stop() -> ok.
 stop() ->
     gen_server:stop(?MODULE).
+
 
 %%% Implementation
 

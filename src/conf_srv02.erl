@@ -1,20 +1,31 @@
+%%% @doc Implementation of conference server with generic code separated.
+%%% @copyright 2017 Phil Dempster
+
 -module(conf_srv02).
 -export([start/0, join/0, send/1, stop/0]).
--include("conf_srv02.hrl").
 
 %%% API
 
+%% @doc Start the conference server.
+-spec start() -> {ok, pid()}.
 start() ->
     gen_start(?MODULE, []).
 
+%% @doc Join the conference; returns list of existing participants.
+-spec join() -> {joined, [pid()]}.
 join() ->
     gen_call(?MODULE, join).
 
+%% @doc Send a broadcast message to all participants.
+-spec send(term()) -> ok.
 send(Message) ->
     gen_call(?MODULE, {send, Message}).
 
+%% @doc Stop the conference server.
+-spec stop() -> ok.
 stop() ->
     gen_stop(?MODULE).
+
 
 %%% Implementation
 
@@ -33,6 +44,7 @@ handle_info({'DOWN', _Ref, process, Pid, _Reason}, Conference) ->
 
 broadcast(Event, Conference) ->
     lists:foreach(fun(P) -> P ! Event end, Conference).
+
 
 %%% Generic
 
