@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.org/altaica/simple_conference.svg?branch=master)](https://travis-ci.org/altaica/simple_conference)
 
 Simple Conference Server
-=======================
+========================
 
 Copyright 2017 Phil Dempster
 
@@ -16,10 +16,10 @@ The server presents the following API:
 
 Function                        | Description
 --------                        | -----------
-`start() -> {ok, pid()}`        | starts the server
-`join() -> {joined, [pid()]}`   | join the conference, returns list of existing participants
-`send(Message::term()) -> ok`   | broadcast a message to all participants
-`stop() -> ok`                  | shutdown the server
+`start() -> {ok, pid()}`        | Start the conference server.
+`join() -> {joined, [pid()]}`   | Join the conference; returns list of existing participants.
+`send(Message::term()) -> ok`   | Send a broadcast message to all participants.
+`stop() -> ok`                  | Stop the conference server.
 
 On joining the server, the caller is announced to the rest of the participants. Participants remain part of the conference as long as the caller process lives. Once the caller terminates, the server announces their disconnection to all remaining participants.
 
