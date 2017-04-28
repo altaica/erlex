@@ -1,5 +1,6 @@
 -module(conf_srv02).
 -export([start/0, join/0, send/1, stop/0]).
+-include("conf_srv.hrl").
 
 %%% API
 
