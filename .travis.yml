@@ -17,4 +17,4 @@ install:
 script:
   - ./rebar3 do version, dialyzer, eunit, ct, cover
   - ./rebar3 as lint lint
-#  - grep "<td><strong>Total</strong></td><td>100%</td>" _build/test/cover/index.html
+  - grep "<td><strong>Total</strong></td><td>100%</td>" _build/test/cover/index.html
