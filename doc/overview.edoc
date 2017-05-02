@@ -1,0 +1,16 @@
+@title Simple Conference Server
+@copyright 2017 Phil Dempster
+
+<p>This example code consists a super-simple conference server in 3 flavours with identical functionality:</p>
+
+<ol>
+<li>Direct implementation</li>
+<li>Implementation with generic code separated</li>
+<li>OTP gen_server implementation</li>
+</ol>
+
+<p>On joining the server, the caller is announced to the rest of the participants.
+Participants remain part of the conference as long as the caller process lives.
+Once the caller terminates, the server announces their disconnection to all remaining participants.
+</p>
+
