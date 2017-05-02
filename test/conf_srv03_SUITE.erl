@@ -6,11 +6,12 @@ all() -> [joe_joins, mike_joins, robert_joins].
 
 init_per_suite(Config) ->
     {ok, _Pid} = conf_srv03:start(),
-    Config.
+    [{server, conf_srv03} | Config].
 
-end_per_suite(_Config) ->
-    ok = conf_srv03:stop().
+end_per_suite(Config) ->
+    Server = ?config(server, Config),
+    ok = Server:stop().
 
-joe_joins(Config) ->    common:join(conf_srv03, Config).
-mike_joins(Config) ->   common:join(conf_srv03, Config).
-robert_joins(Config) -> common:join(conf_srv03, Config).
+joe_joins(Config) ->    common:join(Config).
+mike_joins(Config) ->   common:join(Config).
+robert_joins(Config) -> common:join(Config).

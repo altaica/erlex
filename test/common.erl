@@ -1,8 +1,9 @@
 -module(common).
--export([join/2]).
+-export([join/1]).
 -include_lib("common_test/include/ct.hrl").
 
-join(Server, Config) ->
+join(Config) ->
+    Server = ?config(server, Config),
     {_Prev, Conference} = get_saved_config(?config(saved_config, Config)),
     F = fun() ->
         {joined, Conference} = Server:join(),
