@@ -1,3 +1,6 @@
+%%% @doc Ensure coverage for those hard-to-reach bits.
+%%% @copyright 2017 Phil Dempster
+
 -module(conf_srv_test).
 -include_lib("eunit/include/eunit.hrl").
 

@@ -27,25 +27,6 @@ stop() ->
     gen_stop(?MODULE).
 
 
-%%% Implementation
-
-handle_call(join, {Pid, _Tag}, Conference) ->
-    monitor(process, Pid),
-    broadcast({connected, Pid}, Conference),
-    {reply, {joined, Conference}, [Pid | Conference]};
-handle_call({send, Message}, {Pid, _Tag}, Conference) ->
-    broadcast({message, Pid, Message}, Conference),
-    {reply, ok, Conference}.
-
-handle_info({'DOWN', _Ref, process, Pid, _Reason}, Conference) ->
-    Remaining = lists:delete(Pid, Conference),
-    broadcast({disconnected, Pid}, Remaining),
-    {noreply, Remaining}.
-
-broadcast(Event, Conference) ->
-    lists:foreach(fun(P) -> P ! Event end, Conference).
-
-
 %%% Generic
 
 gen_start(Server, InitState) ->
@@ -83,3 +64,22 @@ gen_loop(State) ->
 
 gen_reply({Pid, Tag}, Reply) ->
     Pid ! {Tag, Reply}.
+
+
+%%% Implementation
+
+handle_call(join, {Pid, _Tag}, Conference) ->
+    monitor(process, Pid),
+    broadcast({connected, Pid}, Conference),
+    {reply, {joined, Conference}, [Pid | Conference]};
+handle_call({send, Message}, {Pid, _Tag}, Conference) ->
+    broadcast({message, Pid, Message}, Conference),
+    {reply, ok, Conference}.
+
+handle_info({'DOWN', _Ref, process, Pid, _Reason}, Conference) ->
+    Remaining = lists:delete(Pid, Conference),
+    broadcast({disconnected, Pid}, Remaining),
+    {noreply, Remaining}.
+
+broadcast(Event, Conference) ->
+    lists:foreach(fun(P) -> P ! Event end, Conference).

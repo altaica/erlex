@@ -1,3 +1,6 @@
+%%% @doc Test suite for simple conference server.
+%%% @copyright 2017 Phil Dempster
+
 -module(conf_srv_SUITE).
 -compile([export_all]).
 -include_lib("common_test/include/ct.hrl").
