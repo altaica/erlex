@@ -26,17 +26,15 @@ joe_joins(Config) ->    join(Config).
 mike_joins(Config) ->   join(Config).
 robert_joins(Config) -> join(Config).
 elephant(Config) ->     join(Config).
-all_leave(Config) ->
-    {elephant, Conference} = get_saved_config(?config(saved_config, Config)),
-    lists:foreach(fun leave/1, Conference).
 
 join(Config) ->
     {_Prev, Conference} = get_saved_config(?config(saved_config, Config)),
     {Pid, Conference} = client_bot:start(?config(server, Config)),
     {save_config, [Pid | Conference]}.
 
-leave(Caller) ->
-    ok = client_bot:stop(Caller).
+all_leave(Config) ->
+    {elephant, Conference} = get_saved_config(?config(saved_config, Config)),
+    lists:foreach(fun client_bot2:stop/1, Conference).
 
 get_saved_config(undefined) -> {undefined, []};
 get_saved_config(SavedConfig) -> SavedConfig.
