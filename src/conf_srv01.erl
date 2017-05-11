@@ -48,7 +48,7 @@ loop(Conference) ->
         {call, Pid, {send, Message}} ->
             broadcast({message, Pid, Message}, Conference),
             Pid ! ok,
-            loop([Pid | Conference]);
+            loop(Conference);
         {'DOWN', _Ref, process, Pid, _Reason} ->
             Remaining = lists:delete(Pid, Conference),
             broadcast({connected, Pid}, Remaining),
