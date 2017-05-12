@@ -42,10 +42,10 @@ handle_call(get_state, _From, State) ->
 handle_cast(_Msg, State) ->
     {stop, undefined, State}.
 
-handle_info({connected, Pid}, {Server, _Expected, Participants}) ->
+handle_info({connected, Pid}, {Server, _Expected, _Participants} = State) ->
     % Send greeting to new caller.
     ok = Server:send({hello, Pid}),
-    {noreply, {Server, _Expected, Participants}};
+    {noreply, State};
 handle_info({disconnected, Pid}, {Server, Expected, Participants}) ->
     % Pid should not be in expected list.
     {noreply, {Server, Expected, lists:delete(Pid, Participants)}};
