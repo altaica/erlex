@@ -11,18 +11,23 @@
 -export([start/1, stop/1]).
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, code_change/3, terminate/2]).
 
-% TODO - use record for state variable
+-type calls():: [pid()].
 
+-record(state, {
+    server::        module(),
+    expected::      calls(),
+    init_calls::    calls()
+}).
 
 %%% API
 
 %% @doc Start a call with the specified server.
 %% @returns Tuple containing the Pid of the client bot and a list of the current conference participants.
--spec start(module()) -> {pid(), list(pid())}.
+-spec start(module()) -> {pid(), calls()}.
 start(Server) ->
     {ok, Pid} = gen_server:start(?MODULE, [Server], []),
-    {_Server, _Expected, Participants} = gen_server:call(Pid, get_state),
-    {Pid, Participants}.
+    State = gen_server:call(Pid, get_state),
+    {Pid, State#state.init_calls}.
 
 %% @doc Terminate our call.
 -spec stop(pid()) -> ok.
@@ -33,8 +38,8 @@ stop(Pid) ->
 %%% Implementation
 
 init([Server]) ->
-    {joined, Expected} = Server:join(),
-    {ok, {Server, Expected, Expected}}.
+    {joined, Calls} = Server:join(),
+    {ok, #state{server = Server, expected = Calls, init_calls = Calls}}.
 
 handle_call(get_state, _From, State) ->
     {reply, State, State}.
@@ -42,23 +47,23 @@ handle_call(get_state, _From, State) ->
 handle_cast(_Msg, State) ->
     {stop, undefined, State}.
 
-handle_info({connected, Pid}, {Server, _Expected, _Participants} = State) ->
+handle_info({connected, Pid}, #state{server = Server} = State) ->
     % Send greeting to new caller.
     ok = Server:send({hello, Pid}),
     {noreply, State};
-handle_info({disconnected, Pid}, {Server, Expected, Participants}) ->
+handle_info({disconnected, Pid}, #state{init_calls = InitCalls} = State) ->
     % Pid should not be in expected list.
-    {noreply, {Server, Expected, lists:delete(Pid, Participants)}};
-handle_info({message, From, {hello, Pid}}, {Server, Expected, Participants})
+    {noreply, State#state{init_calls = lists:delete(Pid, InitCalls)}};
+handle_info({message, From, {hello, Pid}}, #state{expected = Expected} = State)
         when From =/= Pid, Pid =:= self() ->
     % Somebody else has greeted us. Remove from the expected list.
-    {noreply, {Server, lists:delete(From, Expected), Participants}};
+    {noreply, State#state{expected = lists:delete(From, Expected)}};
 handle_info({message, _From, {hello, _Pid}}, State) ->
     {noreply, State}.
 
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 
-terminate(_Reason, {_Server, [], []}) ->
+terminate(_Reason, #state{expected = [], init_calls = []}) ->
     % Verify that we have been greeted by all the original participants.
     ok.
