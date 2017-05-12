@@ -65,6 +65,15 @@ From a terminal, use `rebar3 shell`, e.g.:
     Shell got {message,<0.108.0>,{hello,<0.95.0>}}
     Shell got {message,<0.106.0>,{hello,<0.95.0>}}
     Shell got {message,<0.104.0>,{hello,<0.95.0>}}
+    8> conf_srv01:send({hello, C1}).
+    ok
+    9> flush().
+    Shell got {message,<0.95.0>,{hello,<0.104.0>}}
+    ok
+    10> client_bot:stop(C1).
+    ok
+    11> flush().
+    Shell got {disconnected,<0.104.0>}
     ok
 
 <!-- Tools -->
