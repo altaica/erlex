@@ -37,7 +37,7 @@ join(Config) ->
 
 all_leave(Config) ->
     {elephant, Conference} = get_saved_config(?config(saved_config, Config)),
-    lists:foreach(fun client_bot:stop/1, Conference).
+    lists:foreach(fun client_bot:stop/1, lists:reverse(Conference)).
 
 get_saved_config(undefined) -> {undefined, []};
 get_saved_config(SavedConfig) -> SavedConfig.

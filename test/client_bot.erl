@@ -11,6 +11,8 @@
 -export([start/1, stop/1]).
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, code_change/3, terminate/2]).
 
+% TODO - use record for state variable
+
 
 %%% API
 
@@ -40,13 +42,13 @@ handle_call(get_state, _From, State) ->
 handle_cast(_Msg, State) ->
     {stop, undefined, State}.
 
-handle_info({connected, Pid}, {Server, _Expected, _Participants} = State) ->
+handle_info({connected, Pid}, {Server, _Expected, Participants}) ->
     % Send greeting to new caller.
     ok = Server:send({hello, Pid}),
-    {noreply, State};
-handle_info({disconnected, _Pid}, State) ->
+    {noreply, {Server, _Expected, Participants}};
+handle_info({disconnected, Pid}, {Server, Expected, Participants}) ->
     % Pid should not be in expected list.
-    {noreply, State};
+    {noreply, {Server, Expected, lists:delete(Pid, Participants)}};
 handle_info({message, From, {hello, Pid}}, {Server, Expected, Participants})
         when From =/= Pid, Pid =:= self() ->
     % Somebody else has greeted us. Remove from the expected list.
@@ -57,6 +59,6 @@ handle_info({message, _From, {hello, _Pid}}, State) ->
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 
-terminate(_Reason, {_Server, [], _Participants}) ->
+terminate(_Reason, {_Server, [], []}) ->
     % Verify that we have been greeted by all the original participants.
     ok.
