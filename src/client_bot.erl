@@ -54,9 +54,9 @@ handle_info({connected, Pid}, #state{server = Server} = State) ->
     % Send greeting to new caller.
     ok = apply(Server, send, [{hello, Pid}]),
     {noreply, State};
-handle_info({disconnected, Pid}, #state{init_calls = InitCalls} = State) ->
-    % Pid should not be in expected list.
-    {noreply, State#state{init_calls = lists:delete(Pid, InitCalls)}};
+handle_info({disconnected, Pid}, #state{init_calls = [Pid | Calls]} = State) ->
+    % NB Pid should not be in expected list.
+    {noreply, State#state{init_calls = Calls}};
 handle_info({message, From, {hello, Pid}}, #state{expected = Expected} = State)
         when From =/= Pid, Pid =:= self() ->
     % Somebody else has greeted us. Remove them from the expected list.
