@@ -51,7 +51,7 @@ loop(Conference) ->
             loop(Conference);
         {'DOWN', _Ref, process, Pid, _Reason} ->
             Remaining = lists:delete(Pid, Conference),
-            broadcast({connected, Pid}, Remaining),
+            broadcast({disconnected, Pid}, Remaining),
             loop(Remaining);
         stop ->
             ok
