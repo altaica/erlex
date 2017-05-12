@@ -48,7 +48,7 @@ handle_call(get_state, _From, State) ->
     {reply, State, State}.
 
 handle_cast(_Msg, State) ->
-    {stop, undefined, State}.
+    {stop, normal, State}.
 
 handle_info({connected, Pid}, #state{server = Server} = State) ->
     % Send greeting to new caller.
