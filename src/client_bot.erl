@@ -42,10 +42,10 @@ stop(Pid) ->
 
 init([Server]) ->
     {joined, Calls} = apply(Server, join, []),
-    {ok, #state{server = Server, expected = Calls, init_calls = Calls}}.
+    {ok, #state{server = Server, expected = Calls, init_calls = lists:reverse(Calls)}}.
 
-handle_call(get_state, _From, State) ->
-    {reply, State, State}.
+handle_call(get_state, _From, #state{init_calls = Calls} = State) ->
+    {reply, State#state{init_calls = lists:reverse(Calls)}, State}.
 
 handle_cast(_Msg, State) ->
     {stop, normal, State}.
@@ -54,9 +54,9 @@ handle_info({connected, Pid}, #state{server = Server} = State) ->
     % Send greeting to new caller.
     ok = apply(Server, send, [{hello, Pid}]),
     {noreply, State};
-handle_info({disconnected, Pid}, #state{init_calls = Calls} = State) ->
+handle_info({disconnected, Pid}, #state{init_calls = [Pid | Calls]} = State) ->
     % NB Pid should not be in expected list.
-    {noreply, State#state{init_calls = lists:delete(Pid, Calls)}};
+    {noreply, State#state{init_calls = Calls}};
 handle_info({message, From, {hello, Pid}}, #state{expected = Expected} = State)
         when From =/= Pid, Pid =:= self() ->
     % Somebody else has greeted us. Remove them from the expected list.
