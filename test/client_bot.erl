@@ -3,6 +3,9 @@
 %%% When the server informs the bot that another caller has joined,
 %%% the bot will send a greeting {hello, <Pid>} to the new caller.
 %%%
+%%% The bot expects that calls will be torn down in the same order
+%%% as they are set up. This allows for disconnect testing.
+%%%
 %%% @end
 %%% @copyright 2017 Phil Dempster
 
@@ -56,7 +59,7 @@ handle_info({disconnected, Pid}, #state{init_calls = InitCalls} = State) ->
     {noreply, State#state{init_calls = lists:delete(Pid, InitCalls)}};
 handle_info({message, From, {hello, Pid}}, #state{expected = Expected} = State)
         when From =/= Pid, Pid =:= self() ->
-    % Somebody else has greeted us. Remove from the expected list.
+    % Somebody else has greeted us. Remove them from the expected list.
     {noreply, State#state{expected = lists:delete(From, Expected)}};
 handle_info({message, _From, {hello, _Pid}}, State) ->
     {noreply, State}.
@@ -65,5 +68,6 @@ code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 
 terminate(_Reason, #state{expected = [], init_calls = []}) ->
-    % Verify that we have been greeted by all the original participants.
+    % Verify that we have been greeted by all the original participants
+    % and that they have all left before us.
     ok.
