@@ -3,7 +3,7 @@ smatrix:
   include:
     - os: linux
       language: erlang
-      otp_release: 19.2
+      otp_release: 19.3
 
 # Avoid rebuilding Dialyzer PLT every time.
 cache:
@@ -12,9 +12,9 @@ cache:
 
 # Travis uses rebar by default. Get rebar3 instead.
 install:
-  - wget https://s3.amazonaws.com/rebar3/rebar3 && chmod +x rebar3
+  - wget https://s3.amazonaws.com/rebar3/rebar3
 
 script:
-  - ./rebar3 do version, dialyzer, xref, eunit, ct, cover
-  - ./rebar3 as lint lint
+  - escript rebar3 do version, dialyzer, xref, eunit, ct, cover
+  - escript rebar3 as lint lint
   - grep "<td><strong>Total</strong></td><td>100%</td>" _build/test/cover/index.html
