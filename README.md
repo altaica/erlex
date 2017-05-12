@@ -49,30 +49,28 @@ Manual testing
 From a terminal, use `rebar3 shell`, e.g.:
 
     Eshell V8.3  (abort with ^G)
-    1> c("test/client_bot").
-    {ok,client_bot}
-    2> S = conf_srv01:start().
+    1> S = conf_srv01:start().
     {ok,<0.102.0>}
-    3> {C1, []} = client_bot:start(conf_srv01).
+    2> {C1, []} = client_bot:start(conf_srv01).
     {<0.104.0>,[]}
-    4> {C2, [C1]} = client_bot:start(conf_srv01).
+    3> {C2, [C1]} = client_bot:start(conf_srv01).
     {<0.106.0>,[<0.104.0>]}
-    5> {C3, [C2, C1]} = client_bot:start(conf_srv01).
+    4> {C3, [C2, C1]} = client_bot:start(conf_srv01).
     {<0.108.0>,[<0.106.0>,<0.104.0>]}
-    6> {joined, [C3, C2, C1]} = conf_srv01:join().
+    5> {joined, [C3, C2, C1]} = conf_srv01:join().
     {joined,[<0.108.0>,<0.106.0>,<0.104.0>]}
-    7> flush().
+    6> flush().
     Shell got {message,<0.108.0>,{hello,<0.95.0>}}
     Shell got {message,<0.106.0>,{hello,<0.95.0>}}
     Shell got {message,<0.104.0>,{hello,<0.95.0>}}
-    8> conf_srv01:send({hello, C1}).
+    7> conf_srv01:send({hello, C1}).
     ok
-    9> flush().
+    8> flush().
     Shell got {message,<0.95.0>,{hello,<0.104.0>}}
     ok
-    10> client_bot:stop(C1).
+    9> client_bot:stop(C1).
     ok
-    11> flush().
+    10> flush().
     Shell got {disconnected,<0.104.0>}
     ok
 
