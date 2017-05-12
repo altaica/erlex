@@ -1,7 +1,7 @@
 %%% @doc OTP gen_server implementation of client bot.
 %%%
 %%% When the server informs the bot that another caller has joined,
-%%% the bot will send a greeting {hello, <Pid>} to the new caller.
+%%% the bot will send a greeting {hello, Pid} to the new caller.
 %%%
 %%% The bot expects that calls will be torn down in the same order
 %%% as they are set up. This allows for disconnect testing.
@@ -41,7 +41,7 @@ stop(Pid) ->
 %%% Implementation
 
 init([Server]) ->
-    {joined, Calls} = Server:join(),
+    {joined, Calls} = apply(Server, join, []),
     {ok, #state{server = Server, expected = Calls, init_calls = Calls}}.
 
 handle_call(get_state, _From, State) ->
@@ -52,7 +52,7 @@ handle_cast(_Msg, State) ->
 
 handle_info({connected, Pid}, #state{server = Server} = State) ->
     % Send greeting to new caller.
-    ok = Server:send({hello, Pid}),
+    ok = apply(Server, send, [{hello, Pid}]),
     {noreply, State};
 handle_info({disconnected, Pid}, #state{init_calls = InitCalls} = State) ->
     % Pid should not be in expected list.
