@@ -13,7 +13,8 @@ start() ->
     true = register(?MODULE, Pid),
     {ok, Pid}.
 
-%% @doc Join the conference; returns list of existing participants.
+%% @doc Join the conference.
+%% @returns List of existing participants.
 -spec join() -> {joined, [pid()]}.
 join() ->
     ?MODULE ! {call, self(), join},
@@ -32,7 +33,7 @@ send(Message) ->
 %% @doc Stop the conference server.
 -spec stop() -> ok.
 stop() ->
-    ?MODULE ! stop,
+    true = exit(whereis(?MODULE), stop),
     ok.
 
 
@@ -52,9 +53,7 @@ loop(Conference) ->
         {'DOWN', _Ref, process, Pid, _Reason} ->
             Remaining = lists:delete(Pid, Conference),
             broadcast({disconnected, Pid}, Remaining),
-            loop(Remaining);
-        stop ->
-            ok
+            loop(Remaining)
     end.
 
 broadcast(Event, Conference) ->

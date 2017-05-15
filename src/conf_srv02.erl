@@ -11,7 +11,8 @@
 start() ->
     gen_start(?MODULE, []).
 
-%% @doc Join the conference; returns list of existing participants.
+%% @doc Join the conference.
+%% @returns List of existing participants.
 -spec join() -> {joined, [pid()]}.
 join() ->
     gen_call(?MODULE, join).
@@ -46,8 +47,12 @@ gen_call(Server, Request, Timeout) ->
     end.
 
 gen_stop(Server) ->
-    Server ! stop,
-    ok.
+    Mref = erlang:monitor(process, Server),
+    true = exit(whereis(Server), stop),
+    receive
+        {'DOWN', Mref, process, _Pid, stop} ->
+            ok
+    end.
 
 gen_loop(State) ->
     receive
@@ -55,8 +60,6 @@ gen_loop(State) ->
             {reply, Reply, NewState} = handle_call(Request, From, State),
             gen_reply(From, Reply),
             gen_loop(NewState);
-        stop ->
-            ok;
         InfoMsg ->
             {noreply, NewState} = handle_info(InfoMsg, State),
             gen_loop(NewState)

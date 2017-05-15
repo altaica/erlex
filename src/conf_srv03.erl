@@ -13,7 +13,8 @@
 start() ->
     gen_server:start({local, ?MODULE}, ?MODULE, [], []).
 
-%% @doc Join the conference; returns list of existing participants.
+%% @doc Join the conference.
+%% @returns List of existing participants.
 -spec join() -> {joined, [pid()]}.
 join() ->
     gen_server:call(?MODULE, join).
