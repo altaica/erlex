@@ -15,7 +15,9 @@ conf_srv03_cast_coverage_test() ->
     ?assertMatch(ok, conf_srv03:stop()).
 
 conf_srv03_code_change_coverage_test() ->
-    ?assertMatch({ok, []}, conf_srv03:code_change(1, [], none)).
+    {ok, Pid} = conf_srv03:start(),
+    change_code(Pid, conf_srv03),
+    ?assertMatch(ok, conf_srv03:stop()).
 
 client_bot_cast_coverage_test() ->
     ?assertMatch({ok, _Srv}, conf_srv03:start()),
@@ -24,10 +26,13 @@ client_bot_cast_coverage_test() ->
     ?assertMatch(ok, conf_srv03:stop()).
 
 client_bot_code_change_coverage_test() ->
-    ?assertMatch({ok, []}, client_bot:code_change(1, [], none)).
-    %?assertMatch({ok, _Srv}, conf_srv03:start()),
-    %{Pid, []} = client_bot:start(conf_srv03),
-    %code:load_file(client_bot),
-    %code:soft_purge(client_bot),
-    %?assertMatch(ok, client_bot:stop(Pid)),
-    %?assertMatch(ok, conf_srv03:stop()).
+    ?assertMatch({ok, _Srv}, conf_srv03:start()),
+    {Pid, []} = client_bot:start(conf_srv03),
+    change_code(Pid, client_bot),
+    ?assertMatch(ok, client_bot:stop(Pid)),
+    ?assertMatch(ok, conf_srv03:stop()).
+
+change_code(Pid, Module) ->
+    sys:suspend(Pid),
+    ?assertMatch(ok, sys:change_code(Pid, Module, 1, none)),
+    sys:resume(Pid).
