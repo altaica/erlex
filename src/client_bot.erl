@@ -12,7 +12,12 @@
 -module(client_bot).
 -behaviour(gen_server).
 -export([start/1, stop/1]).
--export([init/1, handle_call/3, handle_cast/2, handle_info/2, code_change/3, terminate/2]).
+-export([init/1,
+         handle_call/3,
+         handle_cast/2,
+         handle_info/2,
+         code_change/3,
+         terminate/2]).
 
 -type calls():: [pid()].
 
@@ -25,7 +30,8 @@
 %%% API
 
 %% @doc Start a call with the specified server.
-%% @returns Tuple containing the Pid of the client bot and a list of the current conference participants.
+%% @returns Tuple containing the Pid of the client bot and
+%%          a list of the current conference participants.
 -spec start(module()) -> {pid(), calls()}.
 start(Server) ->
     {ok, Pid} = gen_server:start(?MODULE, [Server], []),
@@ -42,7 +48,9 @@ stop(Pid) ->
 
 init([Server]) ->
     {joined, Calls} = apply(Server, join, []),
-    {ok, #state{server = Server, expected = Calls, init_calls = lists:reverse(Calls)}}.
+    {ok, #state{server      = Server,
+                expected    = Calls,
+                init_calls  = lists:reverse(Calls)}}.
 
 handle_call(get_state, _From, #state{init_calls = Calls} = State) ->
     {reply, State#state{init_calls = lists:reverse(Calls)}, State}.
