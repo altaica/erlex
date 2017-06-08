@@ -25,15 +25,15 @@ instances() ->
 testcases() ->
     [joe_joins, mike_joins, robert_joins, elephant, all_leave].
 
-joe_joins(Config) ->    join(Config).
-mike_joins(Config) ->   join(Config).
-robert_joins(Config) -> join(Config).
-elephant(Config) ->     join(Config).
+joe_joins(Config) ->    join(Config, joe).
+mike_joins(Config) ->   join(Config, mike).
+robert_joins(Config) -> join(Config, robert).
+elephant(Config) ->     join(Config, elephant).
 
-join(Config) ->
+join(Config, Name) ->
     {_Prev, Conference} = get_saved_config(?config(saved_config, Config)),
-    {Pid, Conference} = client_bot:start(?config(server, Config)),
-    {save_config, [Pid | Conference]}.
+    {_Pid,  Conference} = client_bot:start(?config(server, Config), Name),
+    {save_config, [Name | Conference]}.
 
 all_leave(Config) ->
     {elephant, Conference} = get_saved_config(?config(saved_config, Config)),

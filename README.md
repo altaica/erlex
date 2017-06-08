@@ -48,29 +48,32 @@ Detailed coverage reports can be found by opening `_build/test/cover/index.html`
 From a terminal, use `rebar3 shell`, e.g.:
 
     Eshell V8.3  (abort with ^G)
-    1> S = conf_srv01:start().
-    {ok,<0.102.0>}
-    2> {C1, []} = client_bot:start(conf_srv01).
-    {<0.104.0>,[]}
-    3> {C2, [C1]} = client_bot:start(conf_srv01).
-    {<0.106.0>,[<0.104.0>]}
-    4> {C3, [C2, C1]} = client_bot:start(conf_srv01).
-    {<0.108.0>,[<0.106.0>,<0.104.0>]}
-    5> {joined, [C3, C2, C1]} = conf_srv01:join().
-    {joined,[<0.108.0>,<0.106.0>,<0.104.0>]}
-    6> flush().
-    Shell got {message,<0.108.0>,{hello,<0.95.0>}}
-    Shell got {message,<0.106.0>,{hello,<0.95.0>}}
-    Shell got {message,<0.104.0>,{hello,<0.95.0>}}
-    7> conf_srv01:send({hello, C1}).
+    1> conf_srv01:start().
+    {ok,<0.100.0>}
+    2> {Joe, []} = client_bot:start(conf_srv01, joe).
+    {<0.102.0>,[]}
+    3> {Mike, [joe]} = client_bot:start(conf_srv01, mike).
+    {<0.104.0>,[joe]}
+    4> {Robert, [mike,joe]} = client_bot:start(conf_srv01, robert).
+    {<0.106.0>,[mike,joe]}
+    5> register(me, self()).
+    true
+    6> {joined, [Robert,Mike,Joe]} = conf_srv01:join().
+    {joined,[<0.106.0>,<0.104.0>,<0.102.0>]}
+    7> flush().
+    Shell got {message,<0.106.0>,{hello,me}}
+    Shell got {message,<0.104.0>,{hello,me}}
+    Shell got {message,<0.102.0>,{hello,me}}
     ok
-    8> flush().
-    Shell got {message,<0.95.0>,{hello,<0.104.0>}}
+    8> conf_srv01:send({hello, joe}).
     ok
-    9> client_bot:stop(C1).
+    9> flush().
+    Shell got {message,<0.97.0>,{hello,joe}}
     ok
-    10> flush().
-    Shell got {disconnected,<0.104.0>}
+    10> client_bot:stop(Joe).
+    ok
+    11> flush().
+    Shell got {disconnected,<0.102.0>}
     ok
 
 ## License

@@ -21,13 +21,13 @@ conf_srv03_code_change_coverage_test() ->
 
 client_bot_cast_coverage_test() ->
     ?assertMatch({ok, _Srv}, conf_srv03:start()),
-    {Pid, []} = client_bot:start(conf_srv03),
+    {Pid, []} = client_bot:start(conf_srv03, ?FUNCTION_NAME),
     ?assertMatch(ok, gen_server:cast(Pid, test)),
     ?assertMatch(ok, conf_srv03:stop()).
 
 client_bot_code_change_coverage_test() ->
     ?assertMatch({ok, _Srv}, conf_srv03:start()),
-    {Pid, []} = client_bot:start(conf_srv03),
+    {Pid, []} = client_bot:start(conf_srv03, ?FUNCTION_NAME),
     change_code(Pid, client_bot),
     ?assertMatch(ok, client_bot:stop(Pid)),
     ?assertMatch(ok, conf_srv03:stop()).
