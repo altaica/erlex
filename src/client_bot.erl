@@ -35,8 +35,8 @@
 -spec start(module()) -> {pid(), calls()}.
 start(Server) ->
     {ok, Pid} = gen_server:start(?MODULE, [Server], []),
-    State = gen_server:call(Pid, get_state),
-    {Pid, State#state.init_calls}.
+    Calls = gen_server:call(Pid, get_calls),
+    {Pid, Calls}.
 
 %% @doc Terminate our call.
 -spec stop(pid()) -> ok.
@@ -52,8 +52,8 @@ init([Server]) ->
                 expected    = Calls,
                 init_calls  = lists:reverse(Calls)}}.
 
-handle_call(get_state, _From, #state{init_calls = Calls} = State) ->
-    {reply, State#state{init_calls = lists:reverse(Calls)}, State}.
+handle_call(get_calls, _From, State) ->
+    {reply, lists:reverse(State#state.init_calls), State}.
 
 handle_cast(_Msg, State) ->
     {stop, normal, State}.
