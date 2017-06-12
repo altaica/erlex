@@ -9,7 +9,7 @@
 %%% @end
 %%% @copyright 2017 Phil Dempster
 
--module(client_bot).
+-module(chatbot).
 -behaviour(gen_server).
 -export([start/2, stop/1]).
 -export([init/1,
@@ -72,6 +72,7 @@ handle_info({message, From, {hello, Name}},
             #state{expected = Expected, bot_name = BotName} = State)
         when From =/= self(), Name =:= BotName ->
     % Somebody else has greeted us. Remove them from the expected list.
+    error_logger:info_msg("~w: ~w greeted us~n", [BotName, From]),
     {noreply, State#state{expected = lists:delete(From, Expected)}};
 handle_info({message, _From, {hello, _Name}}, State) ->
     {noreply, State}.

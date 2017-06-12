@@ -1,8 +1,8 @@
 .DS_Store
 _build
-doc/*.html
-doc/edoc-info
-doc/erlang.png
-doc/stylesheet.css
+apps/*/doc/*.html
+apps/*/doc/edoc-info
+apps/*/doc/erlang.png
+apps/*/doc/stylesheet.css
 rebar.lock
 tmp

@@ -15,6 +15,6 @@ install:
   - wget https://s3.amazonaws.com/rebar3/rebar3
 
 script:
-  - escript rebar3 do version, dialyzer, xref, eunit, ct, cover
+  - escript rebar3 do version, tree, dialyzer, xref, eunit, ct, cover
   - escript rebar3 as lint lint
-  - sh test/coverage_check.sh
+  - sh scripts/coverage_check.sh

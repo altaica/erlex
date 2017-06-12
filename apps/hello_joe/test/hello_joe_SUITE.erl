@@ -1,8 +1,9 @@
 %%% @doc Test suite for simple conference server.
 %%% @copyright 2017 Phil Dempster
 
--module(conf_srv_SUITE).
--compile([export_all]).
+-module(hello_joe_SUITE).
+-compile([nowarn_unused_function]).
+-export([all/0, groups/0, init_per_group/2, end_per_group/2]).
 -include_lib("common_test/include/ct.hrl").
 
 all() ->
@@ -23,21 +24,20 @@ instances() ->
     [conf_srv01, conf_srv02, conf_srv03].
 
 testcases() ->
-    [joe_joins, mike_joins, robert_joins, elephant, all_leave].
+    [hello_joe, hello_mike, hello_robert, goodbye].
 
-joe_joins(Config) ->    join(Config, joe).
-mike_joins(Config) ->   join(Config, mike).
-robert_joins(Config) -> join(Config, robert).
-elephant(Config) ->     join(Config, elephant).
+hello_joe(Config) ->    new_chatbot(Config, joe).
+hello_mike(Config) ->   new_chatbot(Config, mike).
+hello_robert(Config) -> new_chatbot(Config, robert).
 
-join(Config, Name) ->
+new_chatbot(Config, Name) ->
     {_Prev, Conference} = get_saved_config(?config(saved_config, Config)),
-    {_Pid,  Conference} = client_bot:start(?config(server, Config), Name),
+    {_Pid,  Conference} = chatbot:start(?config(server, Config), Name),
     {save_config, [Name | Conference]}.
 
-all_leave(Config) ->
-    {elephant, Conference} = get_saved_config(?config(saved_config, Config)),
-    lists:foreach(fun client_bot:stop/1, lists:reverse(Conference)).
+goodbye(Config) ->
+    {_Prev, Conference} = get_saved_config(?config(saved_config, Config)),
+    lists:foreach(fun chatbot:stop/1, lists:reverse(Conference)).
 
 get_saved_config(undefined) -> {undefined, []};
 get_saved_config(SavedConfig) -> SavedConfig.

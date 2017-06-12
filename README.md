@@ -2,26 +2,12 @@
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://travis-ci.org/altaica/simple_conference.svg?branch=master)](https://travis-ci.org/altaica/simple_conference)
 
-# Simple Conference Server
+# Erlang examples
 
 Copyright 2017 Phil Dempster
 
-This repository contains the source code for a tutorial based on 3 iterations of a simple conference server with identical functionality:
-
-1. Direct implementation
-2. Implementation with generic code separated
-3. OTP gen_server implementation
-
-The server exports the following API:
-
-Function                        | Description
---------                        | -----------
-`start() -> {ok, pid()}`        | Start the conference server
-`join() -> {joined, [pid()]}`   | Join the conference; returns list of existing participants
-`send(Message::term()) -> ok`   | Send a broadcast message to all participants
-`stop() -> ok`                  | Stop the conference server
-
-On joining the server, the caller is announced to the rest of the participants. Participants remain part of the conference as long as the caller process lives. Once the caller terminates, the server announces their disconnection to all remaining participants.
+1. [hello_joe](docs/hello_joe.md), 3 iterations of a simple conference server
+2. [traffic_light](docs/traffic_light.md), a pure Erlang finite state machine
 
 ## Build
 
@@ -42,39 +28,6 @@ From a terminal, use `rebar3 as lint lint`.
 From a terminal, use `rebar3 do eunit, ct, cover`.
 
 Detailed coverage reports can be found by opening `_build/test/cover/index.html`.
-
-## Manual testing
-
-From a terminal, use `rebar3 shell`, e.g.:
-
-    Eshell V8.3  (abort with ^G)
-    1> conf_srv01:start().
-    {ok,<0.100.0>}
-    2> {Joe, []} = client_bot:start(conf_srv01, joe).
-    {<0.102.0>,[]}
-    3> {Mike, [joe]} = client_bot:start(conf_srv01, mike).
-    {<0.104.0>,[joe]}
-    4> {Robert, [mike,joe]} = client_bot:start(conf_srv01, robert).
-    {<0.106.0>,[mike,joe]}
-    5> register(me, self()).
-    true
-    6> {joined, [Robert,Mike,Joe]} = conf_srv01:join().
-    {joined,[<0.106.0>,<0.104.0>,<0.102.0>]}
-    7> flush().
-    Shell got {message,<0.106.0>,{hello,me}}
-    Shell got {message,<0.104.0>,{hello,me}}
-    Shell got {message,<0.102.0>,{hello,me}}
-    ok
-    8> conf_srv01:send({hello, joe}).
-    ok
-    9> flush().
-    Shell got {message,<0.97.0>,{hello,joe}}
-    ok
-    10> client_bot:stop(Joe).
-    ok
-    11> flush().
-    Shell got {disconnected,<0.102.0>}
-    ok
 
 ## License
 

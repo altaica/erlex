@@ -1,0 +1,4 @@
+{application, traffic_light, [
+    {description, "Traffic light state machine"},
+    {vsn, git}
+]}.
