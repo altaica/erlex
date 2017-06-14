@@ -1,0 +1,3 @@
+-pa _build/default/lib/cohort/ebin ebin
+-setcookie cohort
+-eval "application:start(cohort)"
