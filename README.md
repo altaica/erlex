@@ -8,6 +8,7 @@ Copyright 2017 Phil Dempster
 
 1. [hello_joe](docs/hello_joe.md), 3 iterations of a simple conference server
 2. [traffic_light](docs/traffic_light.md), a pure Erlang finite state machine
+3. [cohort](docs/cohort.md), a demonstration of failover in a 2 node cluster
 
 ## Build
 
