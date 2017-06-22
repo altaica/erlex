@@ -18,17 +18,14 @@ The purpose of this example is to:
 
 ### Files
 
-| File                      | Description               |
+| File (under apps/cohort)  | Description               |
 | ------------------------- | ------------------------- |
 | src/cohort.erl            | Application source code   |
 | src/cohort.app.src        | Application metadata      |
-| ebin/cohort.app           | Application metadata¹     |
 | config/magnumopus.config  | 1st node configuration    |
 | config/obsequilis.config  | 2nd node configuration    |
 | config/vm.args            | Run-time system flags     |
 | scripts/cohort.cmd        | Start nodes (Windows)     |
-
-¹This is simply a copy of the `.app.src` file.
 
 Most of what is required to make an Erlang application distributed is in the metadata associated with the application (the .app file) and in the configuration passed to the Erlang Run-Time System on startup (the files under `config/` and some other command line parameters). Essentially, we need to tell Erlang that we want the application to be distributed and which nodes we want it to run on.
 
@@ -38,23 +35,23 @@ Most of what is required to make an Erlang application distributed is in the met
 
 ### Compiling the application
 
-The application can either be compiled standalone with `erlc -o ebin src/cohort.erl` or, using the [rebar3] tool, with `rebar3 compile`.
+The application can either be compiled using the [rebar3] tool, with `rebar3 compile`, or standalone with:
 
-> Note that [rebar3] uses the `.app.src` file to generate its own copy of the `.app` file.
+    mkdir ebin && erlc -o ebin apps/cohort/src/cohort.erl && cp apps/cohort/src/cohort.app.src ebin/
 
 ### Starting the nodes
 
 The cohort application runs on one or both of two nodes, named after the fictional [Roman characters][Asterix] _magnumopus_ and _obsequilis_, and is started by the commands:
 
     erl -sname magnumopus@localhost         \
-        -config config/magnumopus.config    \
-        -args_file config/vm.args
+        -config apps/cohort/config/magnumopus.config    \
+        -args_file apps/cohort/config/vm.args
 
 And, in another terminal:
 
     erl -sname obsequilis@localhost         \
-        -config config/obsequilis.config    \
-        -args_file config/vm.args
+        -config apps/cohort/config/obsequilis.config    \
+        -args_file apps/cohort/config/vm.args
 
 What these commands do:
 1. Set the (short) name of the node
@@ -70,21 +67,32 @@ What these commands do:
 
 The active node (initially _magnumopus_) will show:
 
-    (magnumopus@localhost)1> magnumopus@localhost start(normal, [])
+    =INFO REPORT==== 14-Jun-2017::10:36:41 ===
+    magnumopus@localhost start(normal, [])
+
+    =INFO REPORT==== 14-Jun-2017::10:36:41 ===
     magnumopus@localhost in loop
-
-Terminating the active node will cause a failover to the standby node:
-
-    (obsequilis@localhost)1> obsequilis@localhost start({failover,magnumopus@localhost}, [])
-    obsequilis@localhost in loop
-
-> You can run the startup script again to restart the killed node, which will now become the standby node.
 
 Calling `application:takeover/2` on the standby node will force the application to stop on the currently active node and restart on the standby node:
 
     (obsequilis@localhost)1> application:takeover(cohort, temporary).
+    ok
+
+    =INFO REPORT==== 14-Jun-2017::10:39:48 ===
     obsequilis@localhost start({takeover,magnumopus@localhost}, [])
+
+    =INFO REPORT==== 14-Jun-2017::10:39:48 ===
     obsequilis@localhost in loop
+
+Terminating the active node will cause a failover to the standby node:
+
+    =INFO REPORT==== 14-Jun-2017::10:40:23 ===
+    magnumopus@localhost start({failover,obsequilis@localhost}, [])
+
+    =INFO REPORT==== 14-Jun-2017::10:40:23 ===
+    magnumopus@localhost in loop
+
+> You can run the startup script again to restart the killed node, which will now become the standby node.
 
 
 <!-- References -->
