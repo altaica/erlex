@@ -10,9 +10,9 @@ start_node()
         -args_file  $CONFIG_DIR/vm.args
 }
 
-if [ "$1" != "" ]; then
-    # [Re]start specified node.
-    start_node $1
+# If node not running, [re-]start it.
+if ! escript scripts/node_check.erl magnumopus; then
+    start_node magnumopus
 else
-    echo "Usage: $0 <magnumopus|obsequilis>"
+    start_node obsequilis
 fi
