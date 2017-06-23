@@ -6,13 +6,15 @@
 
 Copyright 2017 Phil Dempster
 
-1. [hello_joe](docs/hello_joe.md), 3 iterations of a simple conference server
-2. [traffic_light](docs/traffic_light.md), a pure Erlang finite state machine
-3. [cohort](docs/cohort.md), a demonstration of failover in a 2 node cluster
+This repository contains several example applications:
+
+1. [hello_joe](docs/hello_joe.md), a tutorial implementing 3 iterations of a simple conference server and introducing OTP
+2. [traffic_light](docs/traffic_light.md), a trivial finite state machine to control a fixed traffic light sequence
+3. [cohort](docs/cohort.md), a minimalist demonstration of failover in a distributed OTP application running on a 2 node cluster
 
 ## Build
 
-The project is set up to build using [rebar3].
+The example applications are set up to build using [rebar3].
 
 ## VSCode integration
 
@@ -26,7 +28,7 @@ From a terminal, use `rebar3 as lint lint`.
 
 ## Code coverage
 
-From a terminal, use `rebar3 do eunit, ct, cover`.
+From a terminal, use `rebar3 do eunit, ct, cover`. This will run the unit tests and Common Test suites and display a summary coverage report.
 
 Detailed coverage reports can be found by opening `_build/test/cover/index.html`.
 

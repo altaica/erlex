@@ -1,6 +1,6 @@
 # Cohort
 
-A minimal distributed [Erlang/OTP] application.
+A minimalist demonstration of failover in a distributed OTP application running on a 2 node cluster.
 
 Copyright 2017 Phil Dempster
 
@@ -25,7 +25,8 @@ The purpose of this example is to:
 | config/magnumopus.config  | 1st node configuration    |
 | config/obsequilis.config  | 2nd node configuration    |
 | config/vm.args            | Run-time system flags     |
-| scripts/cohort.cmd        | Start nodes (Windows)     |
+
+Additionally, there are `start_cohort` scripts provided in the `scripts` directory as a convenience in order to start one or (under Windows) both nodes.
 
 Most of what is required to make an Erlang application distributed is in the metadata associated with the application (the .app file) and in the configuration passed to the Erlang Run-Time System on startup (the files under `config/` and some other command line parameters). Essentially, we need to tell Erlang that we want the application to be distributed and which nodes we want it to run on.
 
@@ -43,15 +44,11 @@ The application can either be compiled using the [rebar3] tool, with `rebar3 com
 
 The cohort application runs on one or both of two nodes, named after the fictional [Roman characters][Asterix] _magnumopus_ and _obsequilis_, and is started by the commands:
 
-    erl -sname magnumopus@localhost         \
-        -config apps/cohort/config/magnumopus.config    \
-        -args_file apps/cohort/config/vm.args
+    sh scripts/start_cohort.sh magnumopus
 
 And, in another terminal:
 
-    erl -sname obsequilis@localhost         \
-        -config apps/cohort/config/obsequilis.config    \
-        -args_file apps/cohort/config/vm.args
+    sh scripts/start_cohort.sh obsequilis
 
 What these commands do:
 1. Set the (short) name of the node
@@ -61,7 +58,7 @@ What these commands do:
     * Set the shared 'cookie' that allows the nodes to communicate
     * Start the application
 
-> On Windows, this is automated by the startup script `scripts/cohort.cmd`. Note that the two windows will start on top of each other, with the active node's console hidden behind the standby node.
+> On Windows, both nodes are started by the script `scripts/start_cohort.cmd`. Note that the two windows will start on top of each other, with the active node's console hidden behind the standby node.
 
 ### Expected output
 
@@ -96,7 +93,6 @@ Terminating the active node will cause a failover to the standby node:
 
 
 <!-- References -->
-[Erlang/OTP]:   http://www.erlang.org/
 [cohort]:       https://dictionary.cambridge.org/dictionary/english/cohort
 [distributed]:  http://learnyousomeerlang.com/distributed-otp-applications
 [failover]:     https://en.wikipedia.org/wiki/Failover
