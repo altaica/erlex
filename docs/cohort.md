@@ -22,9 +22,8 @@ The purpose of this example is to:
 | ------------------------- | ------------------------- |
 | src/cohort.erl            | Application source code   |
 | src/cohort.app.src        | Application metadata      |
-| config/magnumopus.config  | 1st node configuration    |
-| config/obsequilis.config  | 2nd node configuration    |
-| config/vm.args            | Run-time system flags     |
+| config/cohort.config      | Cluster configuration     |
+| config/vm.args            | Virtual machine arguments |
 
 Additionally, there are `start_cohort` scripts provided in the `scripts` directory as a convenience in order to start one or (under Windows) both nodes.
 
@@ -46,11 +45,11 @@ The cohort application runs on one or both of two nodes, named after the fiction
 
 After checking if the _magnumopus_ node is already started, this script:
 1. Sets the (short) name of the node
-2. Loads the configuration that describes the cluster from the perspective of the node
-3. Evaluates a file containing common arguments which
+2. Evaluates a file containing VM arguments which
     * Set the path to the compiled BEAM file
     * Set the shared 'cookie' that allows the nodes to communicate
-    * Start the application
+    * Loads the configuration that describes the cluster
+    * Starts the application
 
 > Since on Windows the Erlang shell can be started as a GUI application, both nodes are started by the script `scripts/start_cohort.cmd`. Note that the two windows will start on top of each other, with the active node's console hidden behind the standby node.
 
