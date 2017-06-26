@@ -3,7 +3,7 @@ matrix:
   include:
     - os: linux
       language: erlang
-      otp_release: 19.3
+      otp_release: 20.0
 
 # Avoid rebuilding Dialyzer PLT every time.
 cache:
