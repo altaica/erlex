@@ -7,9 +7,7 @@
 -export([init/1,
          handle_call/3,
          handle_cast/2,
-         handle_info/2,
-         code_change/3,
-         terminate/2]).
+         handle_info/2]).
 
 %%% API
 
@@ -55,12 +53,6 @@ handle_info({'DOWN', _Ref, process, Pid, _Reason}, Conference) ->
     Remaining = lists:delete(Pid, Conference),
     broadcast({disconnected, Pid}, Remaining),
     {noreply, Remaining}.
-
-code_change(_OldVsn, Conference, _Extra) ->
-    {ok, Conference}.
-
-terminate(_Reason, _Conference) ->
-    ok.
 
 broadcast(Event, Conference) ->
     lists:foreach(fun(P) -> P ! Event end, Conference).
