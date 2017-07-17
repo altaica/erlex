@@ -28,8 +28,8 @@ init([Green, Red]) ->
 
 callback_mode() -> handle_event_function.
 
-handle_event(call, {set_timings, NewTimings}, _StateName, Timings) ->
-    {keep_state, maps:merge(Timings, NewTimings), {reply, self(), ok}};
+%handle_event(call, {set_timings, NewTimings}, _StateName, Timings) ->
+%    {keep_state, maps:merge(Timings, NewTimings), {reply, self(), ok}};
 handle_event(state_timeout, transition, State, Timings) ->
     transition(next_state(State), Timings).
 
@@ -40,4 +40,5 @@ next_state(redamber)    -> green.
 
 transition(NextState, Timings) ->
     error_logger:info_msg("State: ~s~n", [NextState]),
-    {next_state, NextState, Timings, {state_timeout, maps:get(NextState, Timings), transition}}.
+    {next_state, NextState, Timings,
+        {state_timeout, maps:get(NextState, Timings), transition}}.
