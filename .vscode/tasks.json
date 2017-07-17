@@ -6,16 +6,35 @@
     "isShellCommand": true,
     "suppressTaskName": true,
     "tasks": [
-    {
-        "taskName": "build",
-        "args": ["do", "dialyzer,", "xref,", "eunit,", "ct,", "cover,", "edoc"]
-    },
-    {
-        "taskName": "lint",
-        "args": ["as", "lint", "lint"]
-    },
-    {
-        "taskName": "test",
-        "args": ["do", "eunit,", "ct,", "cover"]
-    }]
+        {
+            "taskName": "build",
+            "args": [
+                "do",
+                "dialyzer,",
+                "xref,",
+                "eunit,",
+                "ct,",
+                "cover,",
+                "edoc"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "taskName": "lint",
+            "args": [
+                "as",
+                "lint",
+                "lint"
+            ]
+        },
+        {
+            "taskName": "test",
+            "args": [
+                "do",
+                "eunit,",
+                "ct,",
+                "cover"
+            ]
+        }
+    ]
 }
