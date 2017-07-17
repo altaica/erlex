@@ -15,21 +15,29 @@
          handle_event/4]).
 
 start() ->
-    gen_statem:start(?MODULE, [{30000, 20000}], []).
+    gen_statem:start(?MODULE, [20000, 30000], []).
 
-init([InitTimings]) ->
+init([Green, Red]) ->
+    InitTimings = #{
+        green       => Green,
+        amber       => 3000,
+        red         => Red,
+        redamber    => 2000
+    },
     {ok, amber, InitTimings, {next_event, state_timeout, transition}}.
 
-callback_mode() ->
-    handle_event_function.
+callback_mode() -> handle_event_function.
 
-handle_event(state_timeout, transition, StateName, _Data) ->
-    {NextState, Period} = transition(StateName),
+handle_event(call, {set_timings, NewTimings}, _StateName, Timings) ->
+    {keep_state, maps:merge(Timings, NewTimings), {reply, self(), ok}};
+handle_event(state_timeout, transition, State, Timings) ->
+    transition(next_state(State), Timings).
+
+next_state(green)       -> amber;
+next_state(amber)       -> red;
+next_state(red)         -> redamber;
+next_state(redamber)    -> green.
+
+transition(NextState, Timings) ->
     error_logger:info_msg("State: ~s~n", [NextState]),
-    {next_state, NextState, _Data, {state_timeout, Period, transition}}.
-
-transition(green)       -> {amber,       3000}; % Specified by Highways Agency.
-transition(amber)       -> {red,        30000};
-transition(red)         -> {redamber,    2000}; % Specified by Highways Agency.
-transition(redamber)    -> {green,      20000}.
-
+    {next_state, NextState, Timings, {state_timeout, maps:get(NextState, Timings), transition}}.
