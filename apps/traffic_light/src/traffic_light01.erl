@@ -3,11 +3,11 @@
 %%%      "Specification for Traffic Signal Controller".
 %%% @copyright 2017 Phil Dempster
 
--module(traffic_light).
--export([init/0]).
+-module(traffic_light01).
+-export([start/0]).
 
-init() ->
-    loop(transition(amber)).
+start() ->
+    spawn(fun() -> loop(transition(amber)) end).
 
 loop({StateName, Period}) ->
     error_logger:info_msg("State: ~s~n", [StateName]),
