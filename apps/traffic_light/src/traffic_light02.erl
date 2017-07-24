@@ -20,9 +20,9 @@ start() ->
 init([Green, Red]) ->
     InitTimings = #{
         green       => Green,
-        amber       => 3000,
+        amber       => 3000,    % Duration specified by Highways Agency.
         red         => Red,
-        redamber    => 2000
+        redamber    => 2000     % Duration specified by Highways Agency.
     },
     {ok, amber, InitTimings, {next_event, state_timeout, transition}}.
 
@@ -33,12 +33,12 @@ callback_mode() -> handle_event_function.
 handle_event(state_timeout, transition, State, Timings) ->
     transition(next_state(State), Timings).
 
-next_state(green)       -> amber;
-next_state(amber)       -> red;
-next_state(red)         -> redamber;
-next_state(redamber)    -> green.
-
 transition(NextState, Timings) ->
     error_logger:info_msg("State: ~s~n", [NextState]),
     {next_state, NextState, Timings,
         {state_timeout, maps:get(NextState, Timings), transition}}.
+
+next_state(green)       -> amber;
+next_state(amber)       -> red;
+next_state(red)         -> redamber;
+next_state(redamber)    -> green.

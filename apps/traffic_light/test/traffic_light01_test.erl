@@ -4,22 +4,26 @@
 -module(traffic_light01_test).
 -include_lib("eunit/include/eunit.hrl").
 
-transition_from_green_test() ->
-    % Duration specified by Highways Agency.
-    ?assertMatch({amber, 3000}, traffic_light01:transition(green)).
+next_state_from_green_test() ->
+    ?assertMatch(amber, traffic_light01:next_state(green)).
 
-transition_from_amber_test() ->
-    ?assertMatch({red, _Duration}, traffic_light01:transition(amber)).
+next_state_from_amber_test() ->
+    ?assertMatch(red, traffic_light01:next_state(amber)).
 
-transition_from_red_test() ->
-    % Duration specified by Highways Agency.
-    ?assertMatch({redamber, 2000}, traffic_light01:transition(red)).
+next_state_from_red_test() ->
+    ?assertMatch(redamber, traffic_light01:next_state(red)).
 
-transition_from_redamber_test() ->
-    ?assertMatch({green, _Duration}, traffic_light01:transition(redamber)).
+next_state_from_redamber_test() ->
+    ?assertMatch(green, traffic_light01:next_state(redamber)).
 
 loop_test() ->
-    ?assertError(function_clause, traffic_light01:loop({dummy, 0})).
+    Timings = #{
+        green       => 0,
+        amber       => 0,
+        red         => 0,
+        redamber    => -1   % Force exception
+    },
+    ?assertError(timeout_value, traffic_light01:loop(green, Timings)).
 
 start_test() ->
     Pid = traffic_light01:start(),

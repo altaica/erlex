@@ -7,17 +7,22 @@
 -export([start/0]).
 
 start() ->
-    spawn(fun() -> loop(transition(amber)) end).
+    InitTimings = #{
+        green       => 20000,
+        amber       => 3000,    % Duration specified by Highways Agency.
+        red         => 30000,
+        redamber    => 2000     % Duration specified by Highways Agency.
+    },
+    spawn(fun() -> loop(red, InitTimings) end).
 
-loop({StateName, Period}) ->
-    error_logger:info_msg("State: ~s~n", [StateName]),
+loop(State, Timings) ->
+    error_logger:info_msg("State: ~s~n", [State]),
     receive
-    after Period ->
-        loop(transition(StateName))
+    after maps:get(State, Timings) ->
+        loop(next_state(State), Timings)
     end.
 
-transition(green)       -> {amber,       3000}; % Specified by Highways Agency.
-transition(amber)       -> {red,        30000};
-transition(red)         -> {redamber,    2000}; % Specified by Highways Agency.
-transition(redamber)    -> {green,      20000}.
-
+next_state(green)       -> amber;
+next_state(amber)       -> red;
+next_state(red)         -> redamber;
+next_state(redamber)    -> green.
