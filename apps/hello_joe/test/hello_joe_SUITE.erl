@@ -13,11 +13,11 @@ groups() ->
     [{Server, testcases()} || Server <- instances()].
 
 init_per_group(Server, Config) ->
-    {ok, _Pid} = Server:start(),
+    {ok, _Pid} = apply(Server, start, []),
     [{server, Server} | Config].
 
 end_per_group(Server, _Config) ->
-    ok = Server:stop().
+    ok = apply(Server, stop, []).
 
 
 instances() ->

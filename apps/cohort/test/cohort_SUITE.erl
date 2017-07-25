@@ -44,5 +44,5 @@ start_app(NodeId) ->
         {startup_functions, [{cohort, start, []}]},
         {erl_flags, ErlFlags}],
     {ok, Node} = ct_slave:start(NodeId, NodeArgs),
-    pong = net_adm:ping(Node),
-    ct:print("\e[32m Node ~p [OK] \e[0m", [Node]).
+    pong = net_adm:ping(Node).
+    %ct:print("\e[32m Node ~p [OK] \e[0m", [Node]).
