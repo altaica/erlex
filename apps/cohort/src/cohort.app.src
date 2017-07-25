@@ -4,5 +4,6 @@
     {mod,           {application_starter, [cohort, []]}},
     {start_phases,  []},
     {modules,       [cohort]},
-    {registered,    []}
+    {registered,    []},
+    {applications,  []}
 ]}.
