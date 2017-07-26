@@ -41,7 +41,7 @@ The application can either be compiled using the [rebar3] tool, with `rebar3 com
 
 ### Starting the nodes
 
-The cohort application runs on one or both of two nodes, named after the fictional [Roman characters][Asterix] _Magnumopus_ and _Obsequilis_, and is started by the command `sh scripts/start_cohort.sh` run in two seperate terminals.
+The cohort application runs on one or both of two nodes, named after the [fictional Roman characters][Asterix] _Magnumopus_ and _Obsequilis_, and is started by the command `sh scripts/start_cohort.sh` run in two seperate terminals.
 
 After checking if the _magnumopus_ node is already started, this script:
 1. Sets the (short) name of the node
@@ -51,7 +51,7 @@ After checking if the _magnumopus_ node is already started, this script:
     * Loads the configuration that describes the cluster
     * Starts the application
 
-> Since on Windows the Erlang shell can be started as a GUI application, both nodes are started by the script `scripts/start_cohort.cmd`. Note that the two windows will start on top of each other, with the active node's console hidden behind the standby node.
+> Since on Windows the Erlang shell can be started as a GUI application, both nodes are started by the script `scripts/start_cohort.cmd`. For convenience, you can create a "Start Cohort" shortcut to this file in the top level `erlex` directory (be sure to set the working directory to the top level directory also). Note that the two windows will start on top of each other, with the active node's console hidden behind the standby node.
 
 ### Expected output
 
@@ -82,7 +82,7 @@ Terminating the active node will cause a failover to the standby node:
     =INFO REPORT==== 14-Jun-2017::10:40:23 ===
     magnumopus@localhost in loop
 
-> You can run the startup script again to restart the killed node, which will now become the standby node.
+> You can run the startup script again (or use the Windows shortcut if you have created one) to restart the killed node, which will now become the standby node.
 
 
 <!-- References -->
