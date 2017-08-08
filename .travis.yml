@@ -17,4 +17,5 @@ install:
 script:
   - escript rebar3 do version, tree, xref, dialyzer, eunit, ct, cover
   - escript rebar3 as lint lint
+  - sh scripts/cohort_test.sh
   - sh scripts/coverage_check.sh
