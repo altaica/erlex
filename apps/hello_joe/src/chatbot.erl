@@ -47,7 +47,7 @@ stop(Pid) ->
 %%% Implementation
 
 init([Server, Name]) ->
-    {joined, Calls} = apply(Server, join, []),
+    {joined, Calls} = Server:join(),
     {ok, #state{server      = Server,
                 expected    = Calls,
                 init_calls  = lists:reverse(Calls),
@@ -62,7 +62,7 @@ handle_cast(_Msg, State) ->
 
 handle_info({connected, Pid}, #state{server = Server} = State) ->
     % Send greeting to new caller.
-    ok = apply(Server, send, [{hello, pid_to_name(Pid)}]),
+    ok = Server:send({hello, pid_to_name(Pid)}),
     {noreply, State};
 handle_info({disconnected, Pid}, #state{init_calls = [Pid | Calls]} = State) ->
     % NB Pid should not be in expected list.
