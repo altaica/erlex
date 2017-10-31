@@ -11,9 +11,9 @@ cache:
      - "$HOME/.cache/rebar3"
 
 script:
-  - escript rebar3 do xref, dialyzer, eunit, ct, cover
-  - escript rebar3 as lint lint
+  - rebar3 do xref, dialyzer, eunit, ct, cover
+  - rebar3 as lint lint
   - sh scripts/cohort_test.sh
   - sh scripts/coverage_check.sh
-  - escript rebar3 as prod do version, tree, tar
+  - rebar3 as prod do version, tree, tar
 
