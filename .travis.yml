@@ -3,16 +3,12 @@ matrix:
   include:
     - os: linux
       language: erlang
-      otp_release: 20.0
+      otp_release: 20.1
 
 # Avoid rebuilding Dialyzer PLT every time.
 cache:
   directories:
      - "$HOME/.cache/rebar3"
-
-# Travis uses rebar by default. Get rebar3 instead.
-install:
-  - wget https://s3.amazonaws.com/rebar3/rebar3
 
 script:
   - escript rebar3 do xref, dialyzer, eunit, ct, cover
