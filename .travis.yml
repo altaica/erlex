@@ -13,7 +13,7 @@ cache:
 script:
   - rebar3 do xref, dialyzer, eunit, ct, cover
   - rebar3 as lint lint
+  - erl -noshell -eval "erl_tidy:dir("apps", [{test, true}])." -s init stop
   - sh scripts/cohort_test.sh
   - sh scripts/coverage_check.sh
   - rebar3 as prod do version, tree, tar
-
