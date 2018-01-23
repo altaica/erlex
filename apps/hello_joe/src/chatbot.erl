@@ -1,7 +1,7 @@
 %%%---------------------------------------------------------------------
 %%% @copyright 2017 Phil Dempster
 %%%
-%%% @doc OTP gen_server implementation of client bot.
+%%% @doc Client bot for testing the conference server.
 %%%
 %%% When the server informs the bot that another caller has joined,
 %%% the bot will send a greeting <code>{hello, Pid}</code> to the new
@@ -16,14 +16,20 @@
 -module(chatbot).
 -behaviour(gen_server).
 
+%% API.
 -export([start/2, stop/1]).
 
+%% OTP callbacks.
 -export([init/1,
          handle_call/3,
          handle_cast/2,
          handle_info/2,
          terminate/2]).
 
+
+%%%---------------------------------------------------------------------
+%%% Records & types
+%%%---------------------------------------------------------------------
 
 -type calls() :: [pid()].
 
@@ -144,7 +150,7 @@ terminate(_Reason, #state{expected = [], init_calls = []}) ->
 
 
 %%%---------------------------------------------------------------------
-%%%
+%%% Private functions
 %%%---------------------------------------------------------------------
 
 lookup(Calls) ->
