@@ -115,10 +115,10 @@ handle_cast(_Msg, State) ->
 
 %% @doc Handle incoming connections, disconnections and greetings.
 %% <ul>
-%%      <li><code>connected</code>:     New caller - send greeting to them</li>
-%%      <li><code>disconnected</code>:  This pid should not be in the expected list</li>
-%%      <li><code>message</code>:       Somebody else greeted us. Remove them from the expected list</li>
-%%  </ul>
+%%  <li>'connected': New caller - send greeting to them</li>
+%%  <li>'disconnected': This pid should not be in the expected list</li>
+%%  <li>'message': Somebody else greeted us. Remove them from the expected list</li>
+%% </ul>
 %% @end
 
 -spec handle_info(Message, State) -> {noreply, State} when
