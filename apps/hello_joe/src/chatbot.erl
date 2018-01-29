@@ -100,7 +100,7 @@ init([{Server, Name}]) ->
     Message :: get_callers,
     From :: {pid(), reference()},
     State :: state(),
-    Callers :: calls().
+    Callers :: [atom()].
 
 handle_call(get_callers, _From, State) ->
     Callers = lookup(State#state.init_calls),
