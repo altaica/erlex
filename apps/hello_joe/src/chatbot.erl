@@ -115,9 +115,11 @@ handle_cast(_Msg, State) ->
 
 %% @doc Handle incoming connections, disconnections and greetings.
 %% <ul>
-%%  <li>'connected': New caller - send greeting to them</li>
-%%  <li>'disconnected': This pid should not be in the expected list</li>
-%%  <li>'message': Somebody else greeted us. Remove them from the expected list</li>
+%% <li>'connected': New caller - send greeting to conference server</li>
+%% <li>'disconnected': Check disconnecting caller is at head of the init_calls
+%%      list.</li>
+%% <li>'message': Somebody else has sent a greeting.
+%%      If it's for us, remove them from the expected list</li>
 %% </ul>
 %% @end
 
