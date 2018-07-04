@@ -1,5 +1,4 @@
 -pa _build/default/lib/cohort/ebin ebin
--sname magnumopus@localhost
 -setcookie cohort
 -config apps/cohort/config/cohort.config
 -eval "application:start(cohort)"
