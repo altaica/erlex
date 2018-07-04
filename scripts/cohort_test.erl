@@ -10,8 +10,8 @@ main([]) ->
 
 takeover(Node) ->
     io:format("Node ~p performing takeover~n", [Node]),
-    rpc:call(Node, application, takeover, [cohort, temporary]).
+    ok = rpc:call(Node, application, takeover, [cohort, temporary]).
 
 failover(Node) ->
     io:format("Failing over node ~p~n", [Node]),
-    rpc:call(Node, init, restart, []).
+    ok = rpc:call(Node, init, restart, []).
