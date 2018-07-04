@@ -4,6 +4,7 @@ apps/*/doc/*.html
 apps/*/doc/edoc-info
 apps/*/doc/erlang.png
 apps/*/doc/stylesheet.css
+ebin
 rebar.lock
 tmp
 Start Cohort.lnk
