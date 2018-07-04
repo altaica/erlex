@@ -37,7 +37,8 @@ Most of what is required to make an Erlang application distributed is in the met
 
 The application can either be compiled using the [rebar3] tool, with `rebar3 compile`, or standalone with:
 
-    mkdir ebin && erlc -o ebin apps/cohort/src/cohort.erl && cp apps/cohort/src/cohort.app.src ebin/
+    mkdir ebin && cp apps/cohort/src/cohort.app.src ebin/cohort.app
+    erlc -o ebin apps/cohort/src/cohort.erl
 
 ### Starting the nodes
 
