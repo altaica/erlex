@@ -7,30 +7,15 @@
 
 main([]) ->
     Nodes = ['magnumopus@localhost', 'obsequilis@localhost'],
-    
-    start_nodes(Nodes),
-    
-    N1 = get_active_node(Nodes),
-    failover(N1),
 
-    N2 = get_standby_node(Nodes),
-    takeover(N2),
+    Node = get_standby_node(Nodes),
+    takeover(Node),
 
-    takeover(get_standby_node(Nodes)),
-    failover(get_active_node(Nodes)),
+    Node = get_active_node(Nodes),
+    failover(Node),
 
-    get_active_node(Nodes),
-
+    Node = get_standby_node(Nodes),
     kill_nodes(Nodes).
-
-
-start_nodes(Nodes) ->
-    io:format("=== Starting nodes ===~n", []),
-    [start_node(Node) || Node <- Nodes],
-    timer:sleep(1000).
-
-start_node(Node) ->
-    [] = os:cmd("erl -sname " ++ atom_to_list(Node) ++ " -args_file apps/cohort/config/vm.args &").
 
 get_active_node([A, B]) ->
     case {check_node(A), check_node(B)} of
@@ -51,7 +36,7 @@ takeover(Node) ->
 
 failover(Node) ->
     io:format("~n=== Failing over node ~p ===~n", [Node]),
-    ok = rpc:call(Node, init, restart, []),
+    ok = rpc:call(Node, init, reboot, []),
     wait().
 
 kill_nodes(Nodes) ->
@@ -59,12 +44,21 @@ kill_nodes(Nodes) ->
     [kill_node(Node) || Node <- Nodes].
 
 kill_node(Node) ->
-    ok = rpc:call(Node, init, stop, []),
-    io:format("~p stopped~n", [Node]).
+    case rpc:call(Node, init, stop, []) of
+        ok ->
+            io:format("~p stopped~n", [Node]);
+        {badrpc, nodedown} ->
+            io:format("~p is down~n", [Node])
+    end.
 
 check_node(Node) ->
-    Apps = rpc:call(Node, application, which_applications, []),
-    is_running(lists:keyfind(?APP_NAME, 1, Apps), Node).
+    case rpc:call(Node, application, which_applications, []) of
+        {badrpc, nodedown} ->
+            io:format("Node ~p is down~n", [Node]),
+            false;
+        Apps ->
+            is_running(lists:keyfind(?APP_NAME, 1, Apps), Node)
+    end.
 
 is_running(false, Node) ->
     io:format("~p is NOT running on node ~p~n", [?APP_NAME, Node]),
@@ -75,4 +69,3 @@ is_running({?APP_NAME, _, _}, Node) ->
 
 wait() ->
     timer:sleep(?TIMEOUT_MS).
-
