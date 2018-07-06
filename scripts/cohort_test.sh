@@ -13,5 +13,4 @@ escript scripts/cohort_test.erl
 
 # Clean up
 _build/prod+magnumopus/rel/cohort/bin/cohort stop
-_build/prod+obsequilis/rel/cohort/bin/cohort stop
-
+# obsequilis is already stopped
