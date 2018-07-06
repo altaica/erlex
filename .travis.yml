@@ -2,9 +2,8 @@ matrix:
   fast_finish: true
   include:
     - os: linux
-    - dist: xenial
     - language: erlang
-    - otp_release: 20.3.6
+    - otp_release: 20.1
 
 # Avoid rebuilding Dialyzer PLT every time.
 cache:
