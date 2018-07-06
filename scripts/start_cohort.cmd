@@ -9,4 +9,7 @@ exit /B %ERRORLEVEL%
 
 :: Function to start a node and run the `cohort' application on it.
 :start_node
-start werl.exe -sname %1@localhost -args_file apps/cohort/config/vm.args
+start werl.exe  -pa         _build/default/lib/cohort/ebin ebin ^
+                -args_file  apps/cohort/config/%1.args ^
+                -config     apps/cohort/config/sys.config ^
+                -eval       "application:start(cohort)"

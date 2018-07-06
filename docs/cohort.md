@@ -15,19 +15,21 @@ The purpose of this example is to:
 * Demonstrate failover between the nodes
 * Demonstrate takeover between the nodes
 
+The **cohort** application runs on one or both of two nodes, named after the [fictional Roman characters][Asterix] _Magnumopus_ and _Obsequilis_.
 
 ### Files
 
 | File (under apps/cohort)  | Description               |
 | ------------------------- | ------------------------- |
-| src/cohort.erl            | Application source code   |
-| src/cohort.app.src        | Application metadata      |
 | config/cohort.config      | Cluster configuration     |
-| config/vm.args            | Virtual machine arguments |
+| config/magnumopus.args    | Virtual machine arguments (set node name) |
+| config/obsequilis.args    | Virtual machine arguments (set node name) |
+| src/cohort.app.src        | Application metadata      |
+| src/cohort.erl            | Application source code   |
 
-Additionally, there are `start_cohort` scripts provided in the `scripts` directory as a convenience in order to start one or (under Windows) both nodes.
+Additionally, there are utility scripts provided in the `scripts` directory as a convenience in order to facilitate starting nodes and testing distributed behaviour.
 
-Most of what is required to make an Erlang application distributed is in the metadata associated with the application (the .app file) and in the configuration passed to the Erlang Run-Time System on startup (the files under `config/` and some other command line parameters). Essentially, we need to tell Erlang that we want the application to be distributed and which nodes we want it to run on.
+Most of what is required to make an Erlang application distributed is in the configuration passed to the Erlang Run-Time System on startup  (the files under `config`) and in the metadata associated with the application (the `.app` file). Essentially, we need to tell Erlang that a) we want the application to be distributed and b) which nodes we want it to run on.
 
 `cohort.erl` implements the `application` behaviour, which requires it to export the functions `start/2` and `stop/1`. The _StartType_ parameter passed to `start/2` may be `normal` (for inital startup) or a tuple `{failover, Node}` or `{takeover, Node}`, where _Node_ is the name of the node that was previously running.
 
@@ -42,7 +44,7 @@ The application can either be compiled using the [rebar3] tool, with `rebar3 com
 
 ### Starting the nodes
 
-The cohort application runs on one or both of two nodes, named after the [fictional Roman characters][Asterix] _Magnumopus_ and _Obsequilis_, and is started by the command `sh scripts/start_cohort.sh` run in two seperate terminals.
+The cohort application is started by the command `sh scripts/start_cohort.sh` run in two seperate terminals.
 
 After checking if the _magnumopus_ node is already started, this script:
 1. Sets the (short) name of the node
@@ -85,6 +87,11 @@ Terminating the active node will cause a failover to the standby node:
 
 > You can run the startup script again (or use the Windows shortcut if you have created one) to restart the killed node, which will now become the standby node.
 
+### Automated testing
+
+The `cohort_test.sh` script uses `rebar3` to create a release build per node. The nodes are then started and a test script `cohort_test.erl` run, which issues Remote Procedure Calls in order to exercise takeover and failover conditions.
+
+> On Windows, the automated test script `cohort_test.cmd` does not create or use a release build.
 
 <!-- References -->
 [cohort]:       https://dictionary.cambridge.org/dictionary/english/cohort

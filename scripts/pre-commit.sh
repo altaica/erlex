@@ -5,9 +5,11 @@ set -e
 
 rm -rf _build
 
-rebar3 do dialyzer, xref, eunit, ct, cover
-rebar3 as lint lint
+escript scripts/rebar3 do xref, dialyzer, eunit, ct, cover
+escript scripts/rebar3 as lint lint
+
+erl -noshell -eval "erl_tidy:dir("apps", [{test, true}])." -s init stop \
+    | grep -v "tidying directory" \
+    | grep -v "apps/[a-z0-9_]*/test"
+
 sh scripts/coverage_check.sh
-
-rebar3 as prod do version, tree, tar
-
