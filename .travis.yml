@@ -4,7 +4,7 @@ matrix:
     - os: linux
       dist: xenial
       language: erlang
-      otp_release: 21.0.2
+      otp_release: 20.3.6
 
 # Avoid rebuilding Dialyzer PLT every time.
 cache:
@@ -12,9 +12,10 @@ cache:
      - "$HOME/.cache/rebar3"
 
 script:
-  - rebar3 do xref, dialyzer, eunit, ct, cover
+  - rebar3 do version, tree, xref, dialyzer, eunit, ct, cover
   - rebar3 as lint lint
-  - erl -noshell -eval "erl_tidy:dir("apps", [{test, true}])." -s init stop
-  - sh scripts/cohort_test.sh
+  - erl -noshell -eval "erl_tidy:dir("apps", [{test, true}])." -s init stop | grep -v "tidying directory" | grep -v "apps/[a-z0-9_]*/test"
   - sh scripts/coverage_check.sh
-  - rebar3 as prod do version, tree, tar
+  - rebar3 as prod, magnumopus do release
+  - rebar3 as prod, obsequilis do release
+  - sh scripts/cohort_test.sh

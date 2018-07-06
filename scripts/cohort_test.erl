@@ -14,8 +14,7 @@ main([]) ->
     Node = get_active_node(Nodes),
     failover(Node),
 
-    Node = get_standby_node(Nodes),
-    kill_nodes(Nodes).
+    Node = get_standby_node(Nodes).
 
 get_active_node([A, B]) ->
     case {check_node(A), check_node(B)} of
@@ -38,18 +37,6 @@ failover(Node) ->
     io:format("~n=== Failing over node ~p ===~n", [Node]),
     ok = rpc:call(Node, init, reboot, []),
     wait().
-
-kill_nodes(Nodes) ->
-    io:format("~n=== Terminating nodes ===~n", []),
-    [kill_node(Node) || Node <- Nodes].
-
-kill_node(Node) ->
-    case rpc:call(Node, init, stop, []) of
-        ok ->
-            io:format("~p stopped~n", [Node]);
-        {badrpc, nodedown} ->
-            io:format("~p is down~n", [Node])
-    end.
 
 check_node(Node) ->
     case rpc:call(Node, application, which_applications, []) of

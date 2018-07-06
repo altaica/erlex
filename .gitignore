@@ -5,6 +5,7 @@ apps/*/doc/edoc-info
 apps/*/doc/erlang.png
 apps/*/doc/stylesheet.css
 ebin
+erl_crash.dump
 rebar.lock
 tmp
 Start Cohort.lnk
