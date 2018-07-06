@@ -33,9 +33,8 @@ terminate_secondary(_Config) ->
 start_app(NodeId) ->
     NodeName = atom_to_list(NodeId),
     ErlFlags =
-        "-sname " ++ NodeName ++ "@localhost" ++
-        "-config apps/cohort/config/" ++ NodeName ++
-        "-args_file apps/cohort/config/vm.args",
+        "-config apps/cohort/config/sys.config" ++
+        "-args_file apps/cohort/config/" ++ NodeName ++ ".args",
     NodeArgs = [
         {kill_if_fail, true},
         {monitor_master, true},

@@ -4,7 +4,7 @@
 start_node()
 {
     erl -args_file apps/cohort/config/$1.args \
-        -config apps/cohort/config/cohort.config \
+        -config apps/cohort/config/sys.config \
         -pa _build/default/lib/cohort/ebin ebin
 }
 
