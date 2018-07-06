@@ -3,7 +3,9 @@
 # Function to start a node and run the `cohort' application on it.
 start_node()
 {
-    erl -sname $1@localhost -args_file apps/cohort/config/vm.args
+    erl -args_file apps/cohort/config/$1.args \
+        -config apps/cohort/config/cohort.config \
+        -pa _build/default/lib/cohort/ebin ebin
 }
 
 # If node not running, start it.
