@@ -7,9 +7,8 @@ rm -rf _build
 
 escript scripts/rebar3 do xref, dialyzer, eunit, ct, cover
 escript scripts/rebar3 as lint lint
-
-erl -noshell -eval "erl_tidy:dir("apps", [{test, true}])." -s init stop \
-    | grep -v "tidying directory" \
-    | grep -v "apps/[a-z0-9_]*/test"
-
+sh scripts/tidy_check.sh
 sh scripts/coverage_check.sh
+escript scripts/rebar3 as prod, magnumopus do release
+escript scripts/rebar3 as prod, obsequilis do release
+sh scripts/cohort_test.sh
