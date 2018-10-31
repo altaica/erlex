@@ -1,19 +1,24 @@
 %%% @doc Traffic light state machine.
-%%%      See Highways Agency document TR 2500 Issue A November 2005,
-%%%      "Specification for Traffic Signal Controller".
-%%% @copyright 2017 Phil Dempster
+%%%      References:
+%%%      [1] Highways Agency document TR 2500 Issue A November 2005,
+%%%          "Specification for Traffic Signal Controller".
+%%%
+%%% @copyright 2017-2018 Phil Dempster
 
 -module(traffic_light01).
 -export([start/0]).
 
+-define(AMBER_PERIOD, 3000).
+-define(REDAMBER_PERIOD, 2000).
+
 start() ->
     InitTimings = #{
         green       => 20000,
-        amber       => 3000,    % Duration specified by Highways Agency.
+        amber       => ?AMBER_PERIOD,
         red         => 30000,
-        redamber    => 2000     % Duration specified by Highways Agency.
+        redamber    => ?REDAMBER_PERIOD
     },
-    spawn(fun() -> loop(red, InitTimings) end).
+    spawn(fun() -> loop(amber, InitTimings) end).
 
 loop(State, Timings) ->
     error_logger:info_msg("State: ~s~n", [State]),
