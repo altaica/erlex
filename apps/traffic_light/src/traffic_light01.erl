@@ -20,14 +20,14 @@ start() ->
     },
     spawn(fun() -> loop(amber, InitTimings) end).
 
-loop(State, Timings) ->
-    error_logger:info_msg("State: ~s~n", [State]),
+loop(Phase, Timings) ->
+    error_logger:info_msg("Phase: ~s~n", [Phase]),
     receive
-    after maps:get(State, Timings) ->
-        loop(next_state(State), Timings)
+    after maps:get(Phase, Timings) ->
+        loop(next_phase(Phase), Timings)
     end.
 
-next_state(green)       -> amber;
-next_state(amber)       -> red;
-next_state(red)         -> redamber;
-next_state(redamber)    -> green.
+next_phase(green)       -> amber;
+next_phase(amber)       -> red;
+next_phase(red)         -> redamber;
+next_phase(redamber)    -> green.
