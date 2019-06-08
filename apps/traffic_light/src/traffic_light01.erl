@@ -24,10 +24,10 @@ loop(Phase, Timings) ->
     error_logger:info_msg("Phase: ~s~n", [Phase]),
     receive
     after maps:get(Phase, Timings) ->
-        loop(next_phase(Phase), Timings)
+        loop(next_state(Phase), Timings)
     end.
 
-next_phase(green)       -> amber;
-next_phase(amber)       -> red;
-next_phase(red)         -> redamber;
-next_phase(redamber)    -> green.
+next_state(green)       -> amber;
+next_state(amber)       -> red;
+next_state(red)         -> redamber;
+next_state(redamber)    -> green.
