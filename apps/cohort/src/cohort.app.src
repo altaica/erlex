@@ -5,5 +5,5 @@
     {start_phases,  []},
     {modules,       [cohort]},
     {registered,    []},
-    {applications,  []}
+    {applications,  [kernel, stdlib]}
 ]}.

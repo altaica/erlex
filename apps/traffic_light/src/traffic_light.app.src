@@ -1,4 +1,5 @@
 {application, traffic_light, [
     {description, "Traffic light state machine"},
-    {vsn, git}
+    {vsn, git},
+    {applications, [kernel, stdlib]}
 ]}.

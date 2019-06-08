@@ -1,4 +1,5 @@
 {application, hello_joe, [
     {description, "Simple conference server"},
-    {vsn, git}
+    {vsn, git},
+    {applications, [kernel, stdlib]}
 ]}.
