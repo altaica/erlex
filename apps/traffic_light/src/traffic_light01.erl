@@ -21,7 +21,7 @@ start() ->
     spawn(fun() -> loop(amber, InitTimings) end).
 
 loop(Phase, Timings) ->
-    error_logger:info_msg("Phase: ~s~n", [Phase]),
+    logger:info("Phase: ~s~n", [Phase]),
     receive
     after maps:get(Phase, Timings) ->
         loop(next_state(Phase), Timings)

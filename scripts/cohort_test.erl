@@ -1,20 +1,32 @@
-#!/usr/bin/env escript
+%#!/usr/bin/env escript
 %%! -sname cohort_test@localhost -setcookie cohort
 % The above sets magical "emulator arguments", as described in the escript docs.
+-module(cohort_test).
+-export([main/1]).
 
 -define(APP_NAME, cohort).
 -define(TIMEOUT_MS, 5000).
 
 main([]) ->
+    %logger:set_primary_config(level, debug),
     Nodes = ['magnumopus@localhost', 'obsequilis@localhost'],
-
-    Node = get_standby_node(Nodes),
-    takeover(Node),
-
+    takeover(Nodes),
+    failover(Nodes),
     Node = get_active_node(Nodes),
-    failover(Node),
+    logger:notice("Active node is now ~p", [Node]),
+    wait().
 
-    Node = get_standby_node(Nodes).
+takeover(Nodes) ->
+    Node = get_standby_node(Nodes),
+    logger:notice("Standby node ~p performing takeover", [Node]),
+    ok = rpc:call(Node, application, takeover, [?APP_NAME, temporary]),
+    wait().
+
+failover(Nodes) ->
+    Node = get_active_node(Nodes),
+    logger:notice("Failing over active node ~p", [Node]),
+    ok = rpc:call(Node, init, reboot, []),
+    wait().
 
 get_active_node([A, B]) ->
     case {check_node(A), check_node(B)} of
@@ -28,30 +40,20 @@ get_standby_node([A, B]) ->
         {false, true} -> A
     end.
 
-takeover(Node) ->
-    io:format("~n=== Node ~p performing takeover ===~n", [Node]),
-    ok = rpc:call(Node, application, takeover, [?APP_NAME, temporary]),
-    wait().
-
-failover(Node) ->
-    io:format("~n=== Failing over node ~p ===~n", [Node]),
-    ok = rpc:call(Node, init, reboot, []),
-    wait().
-
 check_node(Node) ->
     case rpc:call(Node, application, which_applications, []) of
         {badrpc, nodedown} ->
-            io:format("Node ~p is down~n", [Node]),
+            logger:debug("Node ~p is down", [Node]),
             false;
         Apps ->
             is_running(lists:keyfind(?APP_NAME, 1, Apps), Node)
     end.
 
 is_running(false, Node) ->
-    io:format("~p is NOT running on node ~p~n", [?APP_NAME, Node]),
+    logger:debug("~p is NOT running on node ~p", [?APP_NAME, Node]),
     false;
 is_running({?APP_NAME, _, _}, Node) ->
-    io:format("~p is running on node ~p~n", [?APP_NAME, Node]),
+    logger:debug("~p is running on node ~p", [?APP_NAME, Node]),
     true.
 
 wait() ->

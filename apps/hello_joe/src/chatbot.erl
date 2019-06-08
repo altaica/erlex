@@ -137,7 +137,7 @@ handle_info({disconnected, Pid}, #state{init_calls = [Pid | Calls]} = State) ->
     {noreply, State#state{init_calls = Calls}};
 handle_info({message, From, {hello, Name}}, State)
         when From =/= self(), Name =:= State#state.bot_name ->
-    error_logger:info_msg("~w: ~w greeted us~n", [State#state.bot_name, From]),
+    logger:info("~w: ~w greeted us~n", [State#state.bot_name, From]),
     {noreply, State#state{expected = lists:delete(From, State#state.expected)}};
 handle_info({message, _From, {hello, _Name}}, State) ->
     {noreply, State}.

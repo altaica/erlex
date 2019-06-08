@@ -34,7 +34,7 @@ handle_event(state_timeout, transition, State, Timings) ->
     transition(next_state(State), Timings).
 
 transition(NextState, Timings) ->
-    error_logger:info_msg("State: ~s~n", [NextState]),
+    logger:info("Phase: ~s~n", [NextState]),
     {next_state, NextState, Timings,
         {state_timeout, maps:get(NextState, Timings), transition}}.
 
