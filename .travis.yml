@@ -4,7 +4,7 @@ matrix:
     - os: linux
       dist: xenial
       language: erlang
-      otp_release: 22
+      otp_release: 21.3
 
 # Avoid rebuilding Dialyzer PLT every time.
 cache:
